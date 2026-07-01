@@ -33,10 +33,29 @@ function formatearFechaHumana($fecha_sql) {
     return ucfirst($formateador->format($fecha_objeto));
 }
 
+function obtenerLogoCorreoHTML() {
+    return '<img src="https://forms.lf.edu.co/img/logo-color.svg" alt="Liceo Francés de Medellín" width="150" style="display:block;margin:0 auto;max-width:150px;height:auto;">';
+}
+
+function obtenerPieCorreoHTML() {
+    return <<<HTML
+                    <tr>
+                        <td style="background-color:#0b203f;padding:24px 32px;text-align:center;">
+                            <p style="margin:0;font-size:13px;color:#ffffff;opacity:0.9;">Puertas Abiertas · Liceo Francés de Medellín</p>
+                            <p style="margin:8px 0 0;font-size:12px;color:#ffffff;opacity:0.6;">
+                                <a href="https://lf.edu.co" style="color:#ffffff;text-decoration:none;">lf.edu.co</a>
+                            </p>
+                        </td>
+                    </tr>
+HTML;
+}
+
 function generarCorreoConfirmacionHTML($nombreAcudiente, $nombreAspirante, $fechaVisita) {
     $nombreAcudiente = htmlspecialchars($nombreAcudiente, ENT_QUOTES, 'UTF-8');
     $nombreAspirante = htmlspecialchars($nombreAspirante, ENT_QUOTES, 'UTF-8');
     $fechaVisita = htmlspecialchars($fechaVisita, ENT_QUOTES, 'UTF-8');
+    $logo = obtenerLogoCorreoHTML();
+    $pie = obtenerPieCorreoHTML();
 
     return <<<HTML
 <!DOCTYPE html>
@@ -53,7 +72,7 @@ function generarCorreoConfirmacionHTML($nombreAcudiente, $nombreAspirante, $fech
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(11,32,63,0.08);">
                     <tr>
                         <td style="padding:40px 32px 24px;text-align:center;">
-                            <img src="https://forms.lf.edu.co/img/logo-color.svg" alt="Liceo Francés de Medellín" width="200" style="display:block;margin:0 auto;max-width:100%;height:auto;">
+                            {$logo}
                         </td>
                     </tr>
                     <tr>
@@ -79,17 +98,75 @@ function generarCorreoConfirmacionHTML($nombreAcudiente, $nombreAspirante, $fech
                     </tr>
                     <tr>
                         <td style="padding:0 32px 32px;">
-                            <p style="margin:0;font-size:14px;line-height:1.6;color:#718096;text-align:center;">Te esperamos en las instalaciones del Liceo. Si tienes alguna inquietud, puedes contactarnos a través de nuestros canales oficiales.</p>
+                            <p style="margin:0;font-size:14px;line-height:1.6;color:#718096;text-align:center;">Te esperamos en las instalaciones del Liceo. Si tienes alguna inquietud, puedes contactarnos por WhatsApp al <a href="https://wa.me/573054018421" style="color:#0b203f;font-weight:600;text-decoration:none;">+57 305 401 8421</a>.</p>
+                        </td>
+                    </tr>
+                    {$pie}
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
+}
+
+function generarCorreoAdminHTML($nombreAspirante, $nombreAcudiente, $celularAcudiente, $emailAcudiente, $fechaVisita) {
+    $nombreAspirante = htmlspecialchars($nombreAspirante, ENT_QUOTES, 'UTF-8');
+    $nombreAcudiente = htmlspecialchars($nombreAcudiente, ENT_QUOTES, 'UTF-8');
+    $celularAcudiente = htmlspecialchars($celularAcudiente, ENT_QUOTES, 'UTF-8');
+    $emailAcudiente = htmlspecialchars($emailAcudiente, ENT_QUOTES, 'UTF-8');
+    $fechaVisita = htmlspecialchars($fechaVisita, ENT_QUOTES, 'UTF-8');
+    $logo = obtenerLogoCorreoHTML();
+    $pie = obtenerPieCorreoHTML();
+
+    return <<<HTML
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva inscripción Puertas Abiertas</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f6f8;font-family:'Segoe UI',Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8;padding:40px 16px;">
+        <tr>
+            <td align="center">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(11,32,63,0.08);">
+                    <tr>
+                        <td style="padding:40px 32px 24px;text-align:center;">
+                            {$logo}
                         </td>
                     </tr>
                     <tr>
-                        <td style="background-color:#0b203f;padding:24px 32px;text-align:center;">
-                            <p style="margin:0;font-size:13px;color:#ffffff;opacity:0.9;">Puertas Abiertas · Liceo Francés de Medellín</p>
-                            <p style="margin:8px 0 0;font-size:12px;color:#ffffff;opacity:0.6;">
-                                <a href="https://lf.edu.co" style="color:#ffffff;text-decoration:none;">lf.edu.co</a>
-                            </p>
+                        <td style="padding:0 32px 8px;">
+                            <h1 style="margin:0 0 20px;font-size:22px;font-weight:700;color:#0b203f;text-align:center;line-height:1.3;">Nueva inscripción registrada</h1>
+                            <p style="margin:0 0 16px;font-size:16px;line-height:1.6;color:#4a5568;">Se ha recibido una nueva solicitud de visita guiada a Puertas Abiertas.</p>
                         </td>
                     </tr>
+                    <tr>
+                        <td style="padding:8px 32px 24px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8fafc;border:1px solid #e8edf2;border-radius:12px;">
+                                <tr>
+                                    <td style="padding:20px 24px;">
+                                        <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#718096;text-transform:uppercase;letter-spacing:0.5px;">Aspirante</p>
+                                        <p style="margin:0 0 16px;font-size:16px;font-weight:600;color:#0b203f;">{$nombreAspirante}</p>
+                                        <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#718096;text-transform:uppercase;letter-spacing:0.5px;">Acudiente principal</p>
+                                        <p style="margin:0 0 4px;font-size:16px;font-weight:600;color:#0b203f;">{$nombreAcudiente}</p>
+                                        <p style="margin:0 0 16px;font-size:14px;color:#4a5568;">{$celularAcudiente} · {$emailAcudiente}</p>
+                                        <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#718096;text-transform:uppercase;letter-spacing:0.5px;">Fecha de visita</p>
+                                        <p style="margin:0;font-size:16px;font-weight:600;color:#0b203f;">{$fechaVisita}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0 32px 32px;text-align:center;">
+                            <a href="https://forms.lf.edu.co/" style="display:inline-block;background-color:#0b203f;color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:12px 28px;border-radius:8px;">Ver panel administrativo</a>
+                        </td>
+                    </tr>
+                    {$pie}
                 </table>
             </td>
         </tr>
@@ -180,10 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Enviar alerta por correo al administrador del Liceo
             try {
-                $cuerpoAdmin = "<h3>Nueva solicitud de visita guiada</h3>
-                                <p><strong>Aspirante:</strong> $asp_nombres $asp_apellidos</p>
-                                <p><strong>Acudiente principal:</strong> $acu1_nombres $acu1_apellidos ($acu1_celular)</p>
-                                <p>Revisa los detalles completos ingresando al panel administrativo en https://forms.lf.edu.co/</p>";
+                $cuerpoAdmin = generarCorreoAdminHTML($nombre_aspirante, $nombre_acudiente, $acu1_celular, $acu1_email, $fecha_visita_texto);
                 enviarCorreoSMTP(
                     CORREO_VISITAS,
                     'Puertas Abiertas - Liceo Francés',
