@@ -1,0 +1,103 @@
+/* ================================================================
+   CraftRootsMP - Stripe Express Checkout dentro del resumen
+   Usar con clases: .ny-carrito (cart) y .ny-compraf (checkout)
+   ================================================================ */
+
+/* Ocultar el bloque si queda fuera del resumen (posición por defecto) */
+body.woocommerce-cart .woocommerce > .wc-stripe-express-checkout-element,
+body.woocommerce-checkout .woocommerce-checkout > .wc-stripe-express-checkout-element,
+body.woocommerce-checkout #customer_details ~ .wc-stripe-express-checkout-element,
+body.woocommerce-checkout .woocommerce-notices-wrapper ~ .wc-stripe-express-checkout-element {
+    display: none !important;
+}
+
+/* Separador por defecto de Stripe */
+.ny-carrito .wc-stripe-express-checkout-button-separator,
+.ny-compraf .wc-stripe-express-checkout-button-separator {
+    display: none !important;
+}
+
+/* ---- CARRITO: dentro de Cart totals ---- */
+.ny-carrito .cart_totals .wc-stripe-express-checkout-element {
+    display: block !important;
+    width: 100%;
+    margin: 14px 0 0;
+    padding: 0;
+    clear: both;
+}
+
+.ny-carrito .cart_totals .wc-proceed-to-checkout {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.ny-carrito .cart_totals .wc-proceed-to-checkout .checkout-button {
+    order: 1;
+    margin-top: 0 !important;
+}
+
+.ny-carrito .cart_totals .wc-proceed-to-checkout .wc-stripe-express-checkout-element {
+    order: 2;
+}
+
+/* ---- CHECKOUT: dentro de #order_review ---- */
+.ny-compraf #order_review .wc-stripe-express-checkout-element {
+    display: block !important;
+    width: 100%;
+    margin: 18px 0 0;
+    padding: 0;
+}
+
+.ny-compraf #order_review .woocommerce-checkout-review-order-table {
+    margin-bottom: 0;
+}
+
+/* Botones express apilados a ancho completo */
+.ny-carrito .wc-stripe-express-checkout-element,
+.ny-compraf .wc-stripe-express-checkout-element {
+    --cr-stripe-btn-radius: 12px;
+}
+
+.ny-carrito .wc-stripe-express-checkout-element .StripeElement,
+.ny-compraf .wc-stripe-express-checkout-element .StripeElement,
+.ny-carrito .wc-stripe-express-checkout-element iframe,
+.ny-compraf .wc-stripe-express-checkout-element iframe {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Contenedor interno que genera Stripe */
+.ny-carrito #wc-stripe-express-checkout-element,
+.ny-compraf #wc-stripe-express-checkout-element,
+.ny-carrito .wc-stripe-express-checkout-element > div,
+.ny-compraf .wc-stripe-express-checkout-element > div {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Espaciado entre botones Apple Pay / Google Pay / Amazon / Link */
+.ny-carrito .wc-stripe-express-checkout-element .wc-stripe-express-checkout-button-container,
+.ny-compraf .wc-stripe-express-checkout-element .wc-stripe-express-checkout-button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.ny-carrito .wc-stripe-express-checkout-element button,
+.ny-compraf .wc-stripe-express-checkout-element button {
+    width: 100% !important;
+    min-height: 48px !important;
+    border-radius: var(--cr-stripe-btn-radius) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ny-carrito .cart_totals .wc-stripe-express-checkout-element,
+    .ny-compraf #order_review .wc-stripe-express-checkout-element {
+        margin-top: 12px;
+    }
+}
