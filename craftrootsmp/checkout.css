@@ -713,7 +713,7 @@ body.woocommerce-order-received .ny-compraf .woocommerce-order-overview li:last-
     border-right: none !important;
 }
 
-body.woocommerce-order-received .ny-compraf .woocommerce-order-overview li strong {
+body.woocommerce-order-received .ny-compraf .woocommerce-order-overview.cr-overview-ready li strong {
     display: none !important;
 }
 
@@ -732,6 +732,51 @@ body.woocommerce-order-received .ny-compraf .woocommerce-order-overview .cr-over
     font-size: 0.95rem;
     line-height: 1.4;
     color: var(--cr-black);
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-order-overview .cr-overview-value .woocommerce-Price-amount {
+    font-size: inherit;
+    color: inherit;
+}
+
+/* Detalles bancarios (transferencia) */
+body.woocommerce-order-received .ny-compraf .wc-bacs-bank-details,
+body.woocommerce-order-received .ny-compraf .woocommerce-bacs-bank-details {
+    margin: 0 0 28px !important;
+    padding: 28px 32px !important;
+    background: var(--cr-sidebar-bg);
+    border-radius: 18px;
+    box-sizing: border-box;
+}
+
+body.woocommerce-order-received .ny-compraf .wc-bacs-bank-details h2,
+body.woocommerce-order-received .ny-compraf .woocommerce-bacs-bank-details h2 {
+    margin: 0 0 16px !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: var(--cr-black) !important;
+}
+
+body.woocommerce-order-received .ny-compraf .wc-bacs-bank-details h3,
+body.woocommerce-order-received .ny-compraf .woocommerce-bacs-bank-details h3 {
+    margin: 0 0 12px !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    color: var(--cr-black) !important;
+}
+
+body.woocommerce-order-received .ny-compraf .wc-bacs-bank-details ul,
+body.woocommerce-order-received .ny-compraf .woocommerce-bacs-bank-details ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body.woocommerce-order-received .ny-compraf .wc-bacs-bank-details li,
+body.woocommerce-order-received .ny-compraf .woocommerce-bacs-bank-details li {
+    margin: 0 0 8px;
+    font-size: 0.92rem;
+    line-height: 1.5;
 }
 
 /* Título fuera de la caja gris */

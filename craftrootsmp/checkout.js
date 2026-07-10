@@ -256,61 +256,96 @@
     }
 
     const THANKYOU_MESSAGE = 'Gracias. Tu pedido ha sido recibido. Tu orden se está procesando.';
-    const OVERVIEW_ORDER = [
-        'woocommerce-order-overview__order',
-        'woocommerce-order-overview__date',
-        'woocommerce-order-overview__total',
-        'woocommerce-order-overview__payment-method'
-    ];
-    const OVERVIEW_LABELS = {
-        'woocommerce-order-overview__order': 'Número de pedido',
-        'woocommerce-order-overview__date': 'Fecha',
-        'woocommerce-order-overview__total': 'Total',
-        'woocommerce-order-overview__payment-method': 'Método de pago'
-    };
 
     function normalizeThankYouNotice(root) {
-        const notices = root.querySelectorAll(
-            '.woocommerce-thankyou-order-received, .woocommerce-notice--success'
-        );
+        let notice = root.querySelector('.woocommerce-thankyou-order-received');
 
-        notices.forEach(function (notice, index) {
-            if (index > 0) {
-                notice.remove();
-                return;
-            }
-
+        if (notice) {
             notice.className = 'cr-thankyou-banner';
             notice.removeAttribute('role');
             notice.textContent = THANKYOU_MESSAGE;
-        });
-
-        if (!root.querySelector('.cr-thankyou-banner')) {
-            const orderWrap = root.querySelector('.woocommerce-order');
-            if (!orderWrap) {
-                return;
-            }
-
-            const banner = document.createElement('p');
-            banner.className = 'cr-thankyou-banner';
-            banner.textContent = THANKYOU_MESSAGE;
-            orderWrap.insertBefore(banner, orderWrap.firstChild);
+            return;
         }
+
+        const orderWrap = root.querySelector('.woocommerce-order');
+        if (!orderWrap || root.querySelector('.cr-thankyou-banner')) {
+            return;
+        }
+
+        const banner = document.createElement('p');
+        banner.className = 'cr-thankyou-banner';
+        banner.textContent = THANKYOU_MESSAGE;
+        orderWrap.insertBefore(banner, orderWrap.firstChild);
     }
 
-    function getOverviewItemKey(item) {
-        return OVERVIEW_ORDER.find(function (key) {
-            return item.classList.contains(key);
-        }) || '';
+    function getOverviewSlot(item) {
+        if (item.classList.contains('woocommerce-order-overview__order')) {
+            return 'order';
+        }
+        if (item.classList.contains('woocommerce-order-overview__date')) {
+            return 'date';
+        }
+        if (item.classList.contains('woocommerce-order-overview__total')) {
+            return 'total';
+        }
+        if (item.classList.contains('woocommerce-order-overview__payment-method')) {
+            return 'payment';
+        }
+        if (item.classList.contains('woocommerce-order-overview__email')) {
+            return 'email';
+        }
+        return '';
     }
 
     function getOverviewItemValue(item) {
+        const existingValue = item.querySelector('.cr-overview-value');
+        if (existingValue) {
+            return existingValue.innerHTML.trim();
+        }
+
         const clone = item.cloneNode(true);
         const strong = clone.querySelector('strong');
         if (strong) {
             strong.remove();
         }
-        return clone.textContent.replace(/\s+/g, ' ').trim();
+
+        return clone.innerHTML.trim();
+    }
+
+    function formatOverviewDateValue(value) {
+        const plain = value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        const parsed = new Date(plain);
+
+        if (isNaN(parsed.getTime())) {
+            return value;
+        }
+
+        const day = String(parsed.getDate()).padStart(2, '0');
+        const month = String(parsed.getMonth() + 1).padStart(2, '0');
+        const year = parsed.getFullYear();
+
+        return day + ' / ' + month + ' / ' + year;
+    }
+
+    function getPaymentOverviewValue(root, collected) {
+        const payment = collected.find(function (entry) {
+            return entry.slot === 'payment';
+        });
+
+        if (payment && payment.value) {
+            return payment.value;
+        }
+
+        const paymentRow = root.querySelector('.woocommerce-table--order-details tfoot tr.payment_method td');
+        if (paymentRow) {
+            return paymentRow.innerHTML.trim();
+        }
+
+        const email = collected.find(function (entry) {
+            return entry.slot === 'email';
+        });
+
+        return email ? email.value : '';
     }
 
     function restructureOrderOverview(root) {
@@ -319,57 +354,83 @@
             return;
         }
 
-        const itemsByKey = {};
-        list.querySelectorAll('li').forEach(function (item) {
-            const key = getOverviewItemKey(item);
-            if (key) {
-                itemsByKey[key] = item;
-            } else {
-                item.remove();
-            }
+        const labels = {
+            order: 'Número de pedido',
+            date: 'Fecha',
+            total: 'Total',
+            payment: 'Método de pago'
+        };
+
+        const collected = Array.from(list.querySelectorAll('li')).map(function (item) {
+            return {
+                slot: getOverviewSlot(item),
+                item: item,
+                value: getOverviewItemValue(item)
+            };
+        }).filter(function (entry) {
+            return entry.slot !== '';
         });
 
-        list.innerHTML = '';
+        const paymentValue = getPaymentOverviewValue(root, collected);
+        const slots = ['order', 'date', 'total', 'payment'];
+        const usedItems = [];
 
-        OVERVIEW_ORDER.forEach(function (key) {
-            const item = itemsByKey[key];
-            if (!item) {
+        slots.forEach(function (slot) {
+            let entry = collected.find(function (row) {
+                return row.slot === slot && usedItems.indexOf(row.item) === -1;
+            });
+
+            if (slot === 'payment' && !entry) {
+                entry = collected.find(function (row) {
+                    return row.slot === 'email' && usedItems.indexOf(row.item) === -1;
+                });
+            }
+
+            if (!entry) {
                 return;
             }
 
-            const value = getOverviewItemValue(item);
-            item.innerHTML =
-                '<span class="cr-overview-label">' + OVERVIEW_LABELS[key] + '</span>' +
-                '<span class="cr-overview-value">' + value + '</span>';
+            usedItems.push(entry.item);
 
-            if (key === 'woocommerce-order-overview__date') {
-                const parsed = new Date(value);
-                if (!isNaN(parsed.getTime())) {
-                    const day = String(parsed.getDate()).padStart(2, '0');
-                    const month = String(parsed.getMonth() + 1).padStart(2, '0');
-                    const year = parsed.getFullYear();
-                    item.querySelector('.cr-overview-value').textContent =
-                        day + ' / ' + month + ' / ' + year;
-                }
+            let value = slot === 'payment' ? paymentValue : entry.value;
+            if (slot === 'date') {
+                value = formatOverviewDateValue(value);
             }
 
-            list.appendChild(item);
+            entry.item.innerHTML =
+                '<span class="cr-overview-label">' + labels[slot] + '</span>' +
+                '<span class="cr-overview-value">' + value + '</span>';
+
+            list.appendChild(entry.item);
+        });
+
+        collected.forEach(function (entry) {
+            if (usedItems.indexOf(entry.item) === -1) {
+                entry.item.remove();
+            }
         });
 
         list.classList.add('cr-overview-ready');
     }
 
     function moveOrderDetailsTitleOutside(root) {
+        let title = root.querySelector('.cr-order-details-title');
         const section = root.querySelector('.woocommerce-order-details');
-        const title = section && section.querySelector('.woocommerce-order-details__title');
 
-        if (!section || !title || title.classList.contains('cr-order-details-title')) {
+        if (!title) {
+            title = section && section.querySelector('.woocommerce-order-details__title');
+        }
+
+        if (!section || !title) {
             return;
         }
 
         title.classList.add('cr-order-details-title');
         title.textContent = 'Detalles del pedido:';
-        section.parentNode.insertBefore(title, section);
+
+        if (title.parentNode !== section.parentNode || title.nextElementSibling !== section) {
+            section.parentNode.insertBefore(title, section);
+        }
     }
 
     function fixOrderDetailsTable(root) {
@@ -383,7 +444,7 @@
             const thead = document.createElement('thead');
             headRow = document.createElement('tr');
             thead.appendChild(headRow);
-            table.insertBefore(thead, table.firstChild);
+            table.insertBefore(thead, table.tBodies[0] || table.firstChild);
         }
 
         headRow.innerHTML =
@@ -392,19 +453,30 @@
             '<th class="product-total">Total</th>';
 
         table.querySelectorAll('tbody tr').forEach(function (row) {
-            const nameCell = row.querySelector('td.product-name');
-            const totalCell = row.querySelector('td.product-total');
+            let nameCell = row.querySelector('td.product-name');
+            let totalCell = row.querySelector('td.product-total');
+
+            if (!nameCell && row.cells.length >= 2) {
+                nameCell = row.cells[0];
+                nameCell.classList.add('product-name');
+            }
+
+            if (!totalCell && row.cells.length >= 2) {
+                totalCell = row.cells[row.cells.length - 1];
+                totalCell.classList.add('product-total');
+            }
+
             if (!nameCell || !totalCell) {
                 return;
             }
 
             let qtyCell = row.querySelector('td.product-quantity');
             const qtyHolder = nameCell.querySelector('.cr-order-item-qty');
-            const qtyMatch = nameCell.textContent.match(/×\s*(\d+)/);
+            const qtyEl = nameCell.querySelector('.product-quantity, .quantity');
+            const qtyMatch = nameCell.textContent.match(/[×x]\s*(\d+)/i);
             const qty = qtyHolder
                 ? qtyHolder.getAttribute('data-qty')
-                : (qtyMatch ? qtyMatch[1] : '1');
-            const qtyEl = nameCell.querySelector('.product-quantity');
+                : (qtyEl ? qtyEl.textContent.replace(/[^\d]/g, '') : (qtyMatch ? qtyMatch[1] : '1'));
 
             if (qtyHolder) {
                 qtyHolder.remove();
@@ -420,13 +492,25 @@
             }
 
             qtyCell.textContent = qty;
-            row.innerHTML = '';
-            row.appendChild(nameCell);
-            row.appendChild(qtyCell);
-            row.appendChild(totalCell);
+
+            if (nameCell.nextSibling !== qtyCell) {
+                row.insertBefore(qtyCell, totalCell);
+            }
+
+            if (nameCell.nextSibling && nameCell.nextSibling !== qtyCell) {
+                row.insertBefore(nameCell, row.firstChild);
+            }
         });
 
         table.classList.add('cr-order-table-ready');
+    }
+
+    function hideDuplicateIdentification(root) {
+        root.querySelectorAll('.woocommerce-order > p, .woocommerce-customer-details ~ p').forEach(function (node) {
+            if (/n[uú]mero de identificaci[oó]n/i.test(node.textContent)) {
+                node.remove();
+            }
+        });
     }
 
     function initCraftRootsOrderReceived() {
@@ -442,6 +526,7 @@
         restructureOrderOverview(root);
         moveOrderDetailsTitleOutside(root);
         fixOrderDetailsTable(root);
+        hideDuplicateIdentification(root);
 
         root.classList.add('cr-order-received-ready');
     }

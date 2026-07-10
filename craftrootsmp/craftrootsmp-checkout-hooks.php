@@ -493,3 +493,25 @@ function craftrootsmp_order_received_item_name($item_name, $item, $is_visible) {
     );
 }
 add_filter('woocommerce_order_item_name', 'craftrootsmp_order_received_item_name', 25, 3);
+
+/**
+ * Incluye identificación en la dirección de facturación del pedido recibido.
+ */
+function craftrootsmp_order_received_billing_address($address, $raw_address, $order) {
+    if (
+        !function_exists('is_order_received_page')
+        || !is_order_received_page()
+        || !$order
+        || $address === ''
+    ) {
+        return $address;
+    }
+
+    $value = craftrootsmp_get_order_identification($order);
+    if ($value === '') {
+        return $address;
+    }
+
+    return $address . '<br><strong>' . esc_html__('Número de Identificación:', 'craftrootsmp') . '</strong> ' . esc_html($value);
+}
+add_filter('woocommerce_order_get_formatted_billing_address', 'craftrootsmp_order_received_billing_address', 20, 3);
