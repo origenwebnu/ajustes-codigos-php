@@ -133,7 +133,7 @@ function craftrootsmp_identification_email_order_meta($fields, $sent_to_admin, $
 add_filter('woocommerce_email_order_meta_fields', 'craftrootsmp_identification_email_order_meta', 10, 3);
 
 function craftrootsmp_enqueue_checkout_assets() {
-    if (!is_checkout()) {
+    if (!function_exists('is_checkout') || !is_checkout()) {
         return;
     }
 
@@ -422,3 +422,88 @@ function craftrootsmp_checkout_hide_item_quantity($quantity_html, $cart_item, $c
     return $quantity_html;
 }
 add_filter('woocommerce_checkout_cart_item_quantity', 'craftrootsmp_checkout_hide_item_quantity', 25, 3);
+
+/**
+ * Texto de confirmación en pedido recibido.
+ */
+function craftrootsmp_thankyou_order_received_text($text, $order) {
+    return 'Gracias. Tu pedido ha sido recibido. Tu orden se está procesando.';
+}
+add_filter('woocommerce_thankyou_order_received_text', 'craftrootsmp_thankyou_order_received_text', 10, 2);
+
+/**
+ * Ajusta totales del resumen en la página de pedido recibido.
+ */
+function craftrootsmp_order_received_item_totals($total_rows, $order, $tax_display) {
+    if (!function_exists('is_order_received_page') || !is_order_received_page() || !$order) {
+        return $total_rows;
+    }
+
+    $count = $order->get_item_count();
+
+    if (isset($total_rows['cart_subtotal'])) {
+        $label = $count === 1 ? 'producto' : 'productos';
+        $total_rows['cart_subtotal']['label'] = 'Subtotal (' . $count . ' ' . $label . '):';
+    }
+
+    if (isset($total_rows['shipping']) && (float) $order->get_shipping_total() <= 0) {
+        $total_rows['shipping']['value'] = 'Gratis';
+    }
+
+    if (isset($total_rows['payment_method'])) {
+        $total_rows['payment_method']['label'] = 'Método de pago:';
+    }
+
+    return $total_rows;
+}
+add_filter('woocommerce_get_order_item_totals', 'craftrootsmp_order_received_item_totals', 10, 3);
+
+/**
+ * Miniatura del producto en la tabla de pedido recibido.
+ */
+function craftrootsmp_order_received_item_name($item_name, $item, $is_visible) {
+    if (
+        !function_exists('is_order_received_page')
+        || !is_order_received_page()
+        || !is_a($item, 'WC_Order_Item_Product')
+    ) {
+        return $item_name;
+    }
+
+    $product = $item->get_product();
+    if (!$product) {
+        return $item_name;
+    }
+
+    $thumbnail = craftrootsmp_get_gallery_product_image($product);
+    $plain_name = wp_strip_all_tags($item_name);
+    $plain_name = preg_replace('/\s*×\s*\d+\s*$/', '', $plain_name);
+
+    if (!$thumbnail) {
+        return esc_html($plain_name);
+    }
+
+    return sprintf(
+        '<div class="cr-checkout-product"><div class="cr-checkout-product__thumb">%1$s</div><div class="cr-checkout-product__name">%2$s</div></div>',
+        $thumbnail,
+        esc_html($plain_name)
+    );
+}
+add_filter('woocommerce_order_item_name', 'craftrootsmp_order_received_item_name', 25, 3);
+
+/**
+ * Muestra identificación en la dirección de facturación del pedido recibido.
+ */
+function craftrootsmp_order_received_billing_identification($address_type, $order) {
+    if ($address_type !== 'billing' || !$order) {
+        return;
+    }
+
+    $value = craftrootsmp_get_order_identification($order);
+    if ($value === '') {
+        return;
+    }
+
+    echo '<p class="cr-order-identification"><strong>' . esc_html__('Número de Identificación:', 'craftrootsmp') . '</strong> ' . esc_html($value) . '</p>';
+}
+add_action('woocommerce_order_details_after_customer_address', 'craftrootsmp_order_received_billing_identification', 10, 2);

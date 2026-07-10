@@ -651,3 +651,267 @@ body.woocommerce-checkout .ny-compraf #billing_phone_field {
         font-size: max(11px, calc(0.82rem / 2));
     }
 }
+
+/* ================================================================
+   PEDIDO RECIBIDO (.ny-compraf + body.woocommerce-order-received)
+   ================================================================ */
+
+body.woocommerce-order-received .ny-compraf .woocommerce-order {
+    width: 100%;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-thankyou-order-received {
+    display: block;
+    width: 100%;
+    margin: 0 0 24px !important;
+    padding: 16px 20px !important;
+    border: none !important;
+    border-radius: 10px !important;
+    background: var(--cr-lime) !important;
+    color: var(--cr-black) !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-thankyou-order-received::before {
+    display: none !important;
+}
+
+/* Resumen rápido: número, fecha, total, pago */
+body.woocommerce-order-received .ny-compraf .woocommerce-order-overview {
+    display: flex !important;
+    flex-wrap: wrap;
+    margin: 0 0 28px !important;
+    padding: 0 !important;
+    list-style: none !important;
+    background: var(--cr-white);
+    border: 1px solid var(--cr-input-border);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-order-overview li {
+    flex: 1 1 25%;
+    min-width: 0;
+    margin: 0 !important;
+    padding: 22px 18px !important;
+    border: none !important;
+    border-right: 1px solid var(--cr-input-border) !important;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: var(--cr-black);
+    text-transform: none;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-order-overview li:last-child {
+    border-right: none !important;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-order-overview li strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--cr-muted);
+}
+
+/* Detalles del pedido */
+body.woocommerce-order-received .ny-compraf .woocommerce-order-details {
+    margin: 0 0 28px !important;
+    padding: 36px 32px 32px !important;
+    background: var(--cr-sidebar-bg);
+    border-radius: 18px;
+    box-sizing: border-box;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-order-details__title {
+    margin: 0 0 24px !important;
+    padding: 0 0 18px !important;
+    border: none !important;
+    border-bottom: 1px solid var(--cr-border) !important;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--cr-accent) !important;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details {
+    width: 100% !important;
+    border: none !important;
+    border-collapse: collapse !important;
+    margin: 0 !important;
+    background: transparent !important;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details thead th {
+    padding: 0 12px 16px 0 !important;
+    border: none !important;
+    border-bottom: 1px solid var(--cr-border) !important;
+    background: transparent !important;
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cr-accent);
+    text-align: left;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details thead th.product-total,
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details thead th.product-quantity {
+    text-align: right;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tbody td {
+    padding: 20px 12px 20px 0 !important;
+    border: none !important;
+    border-bottom: 1px solid var(--cr-border) !important;
+    background: transparent !important;
+    vertical-align: middle;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tbody td.product-name {
+    width: auto;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tbody td.product-quantity,
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tbody td.product-total {
+    text-align: right !important;
+    white-space: nowrap;
+    width: 100px;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tfoot th,
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tfoot td {
+    padding: 10px 0 !important;
+    border: none !important;
+    background: transparent !important;
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--cr-black);
+    vertical-align: middle;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tfoot th {
+    text-align: left !important;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tfoot td {
+    text-align: right !important;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tfoot tr:first-child th,
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tfoot tr:first-child td {
+    border-top: 1px solid var(--cr-border) !important;
+    padding-top: 22px !important;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tfoot tr th,
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tfoot tr td {
+    border-top: none !important;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tfoot tr:last-child th,
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tfoot tr:last-child td {
+    border-bottom: 1px solid var(--cr-border) !important;
+    padding-bottom: 22px !important;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tfoot tr.order-total th,
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tfoot tr.order-total td {
+    font-weight: 700 !important;
+}
+
+/* Direcciones */
+body.woocommerce-order-received .ny-compraf .woocommerce-customer-details {
+    margin: 0 !important;
+    padding: 36px 32px 32px !important;
+    background: var(--cr-sidebar-bg);
+    border-radius: 18px;
+    box-sizing: border-box;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-customer-details .woocommerce-columns,
+body.woocommerce-order-received .ny-compraf .woocommerce-customer-details .col2-set {
+    display: block !important;
+    width: 100% !important;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-customer-details .woocommerce-column,
+body.woocommerce-order-received .ny-compraf .woocommerce-customer-details .col-1,
+body.woocommerce-order-received .ny-compraf .woocommerce-customer-details .col-2 {
+    width: 100% !important;
+    float: none !important;
+    margin: 0 0 28px !important;
+    padding: 0 !important;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-customer-details .woocommerce-column:last-child,
+body.woocommerce-order-received .ny-compraf .woocommerce-customer-details .col-2:last-child {
+    margin-bottom: 0 !important;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-column__title {
+    margin: 0 0 12px !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: var(--cr-black) !important;
+    text-transform: none;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-customer-details address {
+    margin: 0;
+    padding: 0;
+    font-style: normal;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: var(--cr-black);
+}
+
+body.woocommerce-order-received .ny-compraf .cr-order-identification {
+    margin: 10px 0 0;
+    font-size: 0.92rem;
+    line-height: 1.65;
+}
+
+@media (max-width: 767px) {
+    body.woocommerce-order-received .ny-compraf .woocommerce-order-overview {
+        flex-direction: column;
+    }
+
+    body.woocommerce-order-received .ny-compraf .woocommerce-order-overview li {
+        flex: none;
+        width: 100% !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--cr-input-border) !important;
+    }
+
+    body.woocommerce-order-received .ny-compraf .woocommerce-order-overview li:last-child {
+        border-bottom: none !important;
+    }
+
+    body.woocommerce-order-received .ny-compraf .woocommerce-order-details,
+    body.woocommerce-order-received .ny-compraf .woocommerce-customer-details {
+        padding: 28px 22px 24px !important;
+    }
+
+    body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details thead {
+        display: none !important;
+    }
+
+    body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tbody tr {
+        display: block;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--cr-border);
+    }
+
+    body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details tbody td {
+        display: block;
+        width: 100% !important;
+        padding: 0 0 8px !important;
+        border: none !important;
+        text-align: left !important;
+    }
+}

@@ -241,7 +241,151 @@
         form.classList.add('cr-checkout-ready');
     }
 
-    document.addEventListener('DOMContentLoaded', initCraftRootsCheckout);
+    function buildOrderReceivedHeader(root, orderWrap) {
+        if (!root || root.querySelector('.cr-checkout-header')) {
+            return;
+        }
+
+        const header = document.createElement('div');
+        header.className = 'cr-checkout-header';
+        header.innerHTML =
+            '<h2 class="cr-checkout-header__title">Pedido recibido</h2>' +
+            '<a href="' + CONTINUE_SHOPPING_URL + '" class="cr-checkout-header__continue">Seguir comprando</a>';
+
+        orderWrap.parentNode.insertBefore(header, orderWrap);
+    }
+
+    function updateOrderOverviewLabels(root) {
+        const labelMap = {
+            order: 'Número de pedido:',
+            date: 'Fecha:',
+            total: 'Total:',
+            email: 'Correo electrónico:',
+            'payment-method': 'Método de pago:'
+        };
+
+        root.querySelectorAll('.woocommerce-order-overview li').forEach(function (item) {
+            const strong = item.querySelector('strong');
+            if (!strong) {
+                return;
+            }
+
+            Object.keys(labelMap).forEach(function (key) {
+                if (item.classList.contains(key) || item.classList.contains('woocommerce-order-overview__' + key)) {
+                    strong.textContent = labelMap[key];
+                }
+            });
+        });
+    }
+
+    function formatOrderOverviewDate(root) {
+        const dateItem = root.querySelector('.woocommerce-order-overview__date');
+        if (!dateItem) {
+            return;
+        }
+
+        const strong = dateItem.querySelector('strong');
+        if (!strong) {
+            return;
+        }
+
+        const raw = dateItem.textContent.replace(strong.textContent, '').trim();
+        const parsed = new Date(raw);
+
+        if (isNaN(parsed.getTime())) {
+            return;
+        }
+
+        const day = String(parsed.getDate()).padStart(2, '0');
+        const month = String(parsed.getMonth() + 1).padStart(2, '0');
+        const year = parsed.getFullYear();
+        const formatted = day + ' / ' + month + ' / ' + year;
+
+        Array.from(dateItem.childNodes).forEach(function (node) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                node.textContent = '';
+            }
+        });
+
+        dateItem.appendChild(document.createTextNode(' ' + formatted));
+    }
+
+    function addOrderDetailsQuantityColumn(root) {
+        const table = root.querySelector('.woocommerce-table--order-details');
+        if (!table || table.classList.contains('cr-order-qty-ready')) {
+            return;
+        }
+
+        const headRow = table.querySelector('thead tr');
+        const totalTh = headRow && headRow.querySelector('th.product-total');
+
+        if (headRow && totalTh && !headRow.querySelector('th.cr-qty-header')) {
+            const qtyTh = document.createElement('th');
+            qtyTh.className = 'product-quantity cr-qty-header';
+            qtyTh.textContent = 'Cantidad';
+            headRow.insertBefore(qtyTh, totalTh);
+        }
+
+        table.querySelectorAll('tbody tr').forEach(function (row) {
+            if (row.querySelector('td.product-quantity')) {
+                return;
+            }
+
+            const nameCell = row.querySelector('td.product-name');
+            const totalCell = row.querySelector('td.product-total');
+            if (!nameCell || !totalCell) {
+                return;
+            }
+
+            const qtyMatch = nameCell.textContent.match(/×\s*(\d+)/);
+            const qty = qtyMatch ? qtyMatch[1] : '1';
+            const qtyEl = nameCell.querySelector('.product-quantity');
+            if (qtyEl) {
+                qtyEl.remove();
+            }
+
+            const qtyCell = document.createElement('td');
+            qtyCell.className = 'product-quantity';
+            qtyCell.setAttribute('data-title', 'Cantidad');
+            qtyCell.textContent = qty;
+            row.insertBefore(qtyCell, totalCell);
+        });
+
+        table.classList.add('cr-order-qty-ready');
+    }
+
+    function updateOrderDetailsTitle(root) {
+        const title = root.querySelector('.woocommerce-order-details__title');
+        if (title) {
+            title.textContent = 'Detalles del pedido:';
+        }
+    }
+
+    function initCraftRootsOrderReceived() {
+        const root = getCheckoutRoot();
+        const orderWrap = root && root.querySelector('.woocommerce-order');
+
+        if (!root || !orderWrap) {
+            return;
+        }
+
+        buildOrderReceivedHeader(root, orderWrap);
+        updateOrderOverviewLabels(root);
+        formatOrderOverviewDate(root);
+        updateOrderDetailsTitle(root);
+        addOrderDetailsQuantityColumn(root);
+
+        root.classList.add('cr-order-received-ready');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (document.body.classList.contains('woocommerce-order-received')) {
+            initCraftRootsOrderReceived();
+            return;
+        }
+
+        initCraftRootsCheckout();
+    });
 
     if (window.jQuery) {
         window.jQuery(document.body).on('updated_checkout', initCraftRootsCheckout);
