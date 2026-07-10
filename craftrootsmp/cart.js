@@ -2,6 +2,8 @@
     'use strict';
 
     const SHIPPING_NOTE = 'Envío gratis a todo Colombia en compras elegibles. Los tiempos de entrega se calculan según tu ciudad al finalizar la compra.';
+    const CONTINUE_SHOPPING_URL = 'https://laforeste.com/los-guardianes/';
+    const REMOVE_ICON_URL = 'https://laforeste.com/wp-content/themes/hello-elementor/craftrootsmp/borrar.svg';
 
     function getShopUrl() {
         const backLink = document.querySelector('.ny-carrito .return-to-shop a, .ny-carrito a.wc-backward');
@@ -46,6 +48,14 @@
             if (removeLink && nameCell && !nameCell.contains(removeLink)) {
                 nameCell.appendChild(removeLink);
             }
+        });
+    }
+
+    function replaceRemoveIcons(container) {
+        container.querySelectorAll('a.remove').forEach(function (link) {
+            link.classList.add('cr-remove-item');
+            link.setAttribute('aria-label', 'Eliminar producto');
+            link.innerHTML = '<img src="' + REMOVE_ICON_URL + '" alt="" width="20" height="20" loading="lazy">';
         });
     }
 
@@ -103,7 +113,7 @@
         });
     }
 
-    function buildCartHeader(container, itemCount, shopUrl) {
+    function buildCartHeader(container, itemCount) {
         if (container.querySelector('.cr-cart-header')) {
             return;
         }
@@ -120,7 +130,7 @@
                 '<h1 class="cr-cart-header__title">Carrito de compras</h1>' +
                 '<p class="cr-cart-header__count">(' + itemCount + ' ' + (itemCount === 1 ? 'Producto' : 'Productos') + ')</p>' +
             '</div>' +
-            '<a href="' + shopUrl + '" class="cr-cart-header__continue">Seguir comprando</a>';
+            '<a href="' + CONTINUE_SHOPPING_URL + '" class="cr-cart-header__continue">Seguir comprando</a>';
 
         container.insertBefore(header, form);
     }
@@ -183,22 +193,28 @@
     }
 
     function addShippingNote(cartTotals) {
-        if (!cartTotals || cartTotals.querySelector('.cr-shipping-note')) {
+        if (!cartTotals || cartTotals.querySelector('.cr-shipping-note-row')) {
             return;
         }
 
-        const orderTotalRow = cartTotals.querySelector('.order-total');
-        if (!orderTotalRow) {
+        const subtotalRow = cartTotals.querySelector('.cart-subtotal');
+        if (!subtotalRow || !subtotalRow.parentNode) {
             return;
         }
 
-        const note = document.createElement('div');
-        note.className = 'cr-shipping-note';
-        note.innerHTML = '<p>' + SHIPPING_NOTE + '</p>';
-        orderTotalRow.parentNode.insertBefore(note, orderTotalRow);
+        const row = document.createElement('tr');
+        row.className = 'cr-shipping-note-row';
+
+        const cell = document.createElement('td');
+        cell.colSpan = 2;
+        cell.className = 'cr-shipping-note-cell';
+        cell.innerHTML = '<div class="cr-shipping-note"><p>' + SHIPPING_NOTE + '</p></div>';
+
+        row.appendChild(cell);
+        subtotalRow.insertAdjacentElement('afterend', row);
     }
 
-    function setupSidebarActions(container, cartTotals, shopUrl) {
+    function setupSidebarActions(container, cartTotals) {
         const form = container.querySelector('form.woocommerce-cart-form');
         const checkoutButton = cartTotals.querySelector('.checkout-button');
         const updateButton = container.querySelector('[name="update_cart"]');
@@ -214,7 +230,7 @@
 
         if (checkoutButton && !cartTotals.querySelector('.cr-continue-shopping')) {
             const continueLink = document.createElement('a');
-            continueLink.href = shopUrl;
+            continueLink.href = CONTINUE_SHOPPING_URL;
             continueLink.className = 'cr-continue-shopping';
             continueLink.textContent = 'Seguir comprando';
             checkoutButton.insertAdjacentElement('afterend', continueLink);
@@ -257,12 +273,12 @@
             return;
         }
 
-        const shopUrl = getShopUrl();
         const cartTotals = container.querySelector('.cart_totals');
 
-        buildCartHeader(container, itemCount, shopUrl);
+        buildCartHeader(container, itemCount);
         setSpanishTableHeaders(container);
         moveRemoveIntoProductName(container);
+        replaceRemoveIcons(container);
         removeEmptyTableColumns(container);
 
         container.querySelectorAll('.quantity input.qty').forEach(initQuantityStepper);
@@ -270,7 +286,7 @@
         if (cartTotals) {
             moveCouponToSidebar(container, cartTotals);
             addShippingNote(cartTotals);
-            setupSidebarActions(container, cartTotals, shopUrl);
+            setupSidebarActions(container, cartTotals);
         }
 
         container.classList.add('cr-cart-ready');

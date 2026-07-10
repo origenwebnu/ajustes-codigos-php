@@ -141,7 +141,7 @@
 }
 
 .ny-carrito table.cart thead th {
-    padding: 0 0 16px !important;
+    padding: 0 18px 16px !important;
     border: none !important;
     border-bottom: 1px solid var(--cr-border) !important;
     background: transparent !important;
@@ -161,33 +161,38 @@
 }
 
 .ny-carrito table.cart thead th.product-thumbnail {
-    width: 72px;
+    width: 120px;
+    max-width: 120px;
     padding-left: 0 !important;
-    padding-right: 16px !important;
+    padding-right: 20px !important;
 }
 
 .ny-carrito table.cart thead th.product-name {
     width: auto;
     text-align: left;
     padding-left: 0 !important;
+    padding-right: 18px !important;
 }
 
 .ny-carrito table.cart thead th.product-price {
-    width: 130px;
+    width: 140px;
     text-align: right !important;
-    padding-right: 40px !important;
+    padding-right: 28px !important;
+    padding-left: 18px !important;
 }
 
 .ny-carrito table.cart thead th.product-quantity {
-    width: 120px;
+    width: 130px;
     text-align: center !important;
-    padding-left: 12px !important;
+    padding-left: 28px !important;
+    padding-right: 18px !important;
 }
 
 .ny-carrito table.cart thead th.product-subtotal {
-    width: 110px;
+    width: 120px;
     text-align: right !important;
     padding-right: 0 !important;
+    padding-left: 18px !important;
 }
 
 .ny-carrito table.cart tr.cart_item {
@@ -202,7 +207,7 @@
 }
 
 .ny-carrito table.cart tr.cart_item td {
-    padding: 22px 0 !important;
+    padding: 24px 18px !important;
     border: none !important;
     border-bottom: 1px solid var(--cr-border) !important;
     background: transparent !important;
@@ -216,28 +221,39 @@
 }
 
 .ny-carrito table.cart td.product-thumbnail {
-    width: 72px;
+    width: 120px;
+    max-width: 120px;
     padding-left: 0 !important;
-    padding-right: 16px !important;
+    padding-right: 20px !important;
+    vertical-align: middle !important;
+}
+
+.ny-carrito table.cart td.product-thumbnail a {
+    display: block;
+    line-height: 0;
 }
 
 .ny-carrito table.cart td.product-thumbnail img {
-    width: 64px !important;
-    height: 64px !important;
-    object-fit: cover;
+    width: auto !important;
+    max-width: 120px !important;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: contain !important;
     border-radius: 8px;
+    display: block;
 }
 
 .ny-carrito table.cart td.product-name {
     position: relative;
-    padding-right: 32px !important;
+    padding-right: 40px !important;
     padding-left: 0 !important;
     text-align: left !important;
 }
 
 .ny-carrito table.cart td.product-price {
     text-align: right !important;
-    padding-right: 40px !important;
+    padding-right: 28px !important;
+    padding-left: 18px !important;
     font-size: 0.95rem;
     font-weight: 400;
     white-space: nowrap;
@@ -245,13 +261,14 @@
 
 .ny-carrito table.cart td.product-quantity {
     text-align: center !important;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
+    padding-left: 28px !important;
+    padding-right: 18px !important;
 }
 
 .ny-carrito table.cart td.product-subtotal {
     text-align: right !important;
     padding-right: 0 !important;
+    padding-left: 18px !important;
     font-size: 0.95rem;
     font-weight: 400;
     white-space: nowrap;
@@ -270,26 +287,37 @@
 }
 
 .ny-carrito table.cart .product-name .remove,
-.ny-carrito table.cart td.product-name > a.remove {
+.ny-carrito table.cart td.product-name > a.remove,
+.ny-carrito table.cart a.remove.cr-remove-item {
     position: absolute;
     top: 50%;
     right: 0;
     transform: translateY(-50%);
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
-    font-size: 1.15rem;
-    line-height: 1;
-    color: var(--cr-muted) !important;
+    font-size: 0 !important;
+    line-height: 0;
+    color: transparent !important;
     text-decoration: none;
-    border-radius: 50%;
+    background: transparent !important;
+    border-radius: 0;
+    overflow: hidden;
 }
 
-.ny-carrito table.cart .product-name .remove:hover {
-    color: var(--cr-black) !important;
-    background: #eee;
+.ny-carrito table.cart a.remove.cr-remove-item img {
+    display: block;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.ny-carrito table.cart .product-name .remove:hover,
+.ny-carrito table.cart a.remove.cr-remove-item:hover {
+    opacity: 0.7;
+    background: transparent !important;
 }
 
 /* ---- CANTIDAD +/- ---- */
@@ -413,13 +441,25 @@
     display: none;
 }
 
+.ny-carrito .cart_totals tr.cr-shipping-note-row {
+    display: table-row;
+    width: 100%;
+}
+
+.ny-carrito .cart_totals tr.cr-shipping-note-row td.cr-shipping-note-cell {
+    display: table-cell !important;
+    width: 100% !important;
+    padding: 18px 0 !important;
+    border: none !important;
+    border-bottom: 1px solid var(--cr-border) !important;
+    background: transparent !important;
+}
+
 .ny-carrito .cr-shipping-note {
     display: block;
     width: 100%;
     max-width: 100%;
     margin: 0;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--cr-border);
     box-sizing: border-box;
 }
 
@@ -433,6 +473,8 @@
     color: var(--cr-muted);
     font-weight: 400;
     box-sizing: border-box;
+    white-space: normal;
+    word-break: normal;
 }
 
 /* ---- CUPÓN EN SIDEBAR ---- */

@@ -72,11 +72,12 @@ function craftrootsmp_cart_item_gallery_thumbnail($thumbnail, $cart_item, $cart_
     $first_gallery_id = (int) $gallery_ids[0];
     $gallery_image = wp_get_attachment_image(
         $first_gallery_id,
-        'woocommerce_thumbnail',
+        'woocommerce_single',
         false,
         [
-            'class' => 'attachment-woocommerce_thumbnail size-woocommerce_thumbnail',
+            'class' => 'attachment-woocommerce_single size-woocommerce_single cr-cart-gallery-thumb',
             'alt'   => $product->get_name(),
+            'style' => 'max-width:120px;height:auto;',
         ]
     );
 
