@@ -42,3 +42,44 @@ function craftrootsmp_enqueue_cart_assets() {
     );
 }
 add_action('wp_enqueue_scripts', 'craftrootsmp_enqueue_cart_assets', 40);
+
+/**
+ * Usa la primera imagen de la galería del producto en el miniatura del carrito.
+ */
+function craftrootsmp_cart_item_gallery_thumbnail($thumbnail, $cart_item, $cart_item_key) {
+    if (empty($cart_item['data']) || !is_a($cart_item['data'], 'WC_Product')) {
+        return $thumbnail;
+    }
+
+    $product = $cart_item['data'];
+    $product_id = $product->get_id();
+
+    if ($product->is_type('variation')) {
+        $product_id = $product->get_parent_id();
+        $product = wc_get_product($product_id);
+    }
+
+    if (!$product) {
+        return $thumbnail;
+    }
+
+    $gallery_ids = $product->get_gallery_image_ids();
+
+    if (empty($gallery_ids)) {
+        return $thumbnail;
+    }
+
+    $first_gallery_id = (int) $gallery_ids[0];
+    $gallery_image = wp_get_attachment_image(
+        $first_gallery_id,
+        'woocommerce_thumbnail',
+        false,
+        [
+            'class' => 'attachment-woocommerce_thumbnail size-woocommerce_thumbnail',
+            'alt'   => $product->get_name(),
+        ]
+    );
+
+    return $gallery_image ?: $thumbnail;
+}
+add_filter('woocommerce_cart_item_thumbnail', 'craftrootsmp_cart_item_gallery_thumbnail', 20, 3);

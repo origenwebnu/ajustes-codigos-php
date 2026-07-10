@@ -8,7 +8,8 @@
     --cr-black: #111111;
     --cr-text: #111111;
     --cr-muted: #6B6B6B;
-    --cr-border: #D9D9D9;
+    --cr-accent: #581222;
+    --cr-border: #581222;
     --cr-sidebar-bg: #F3F3F3;
     --cr-white: #FFFFFF;
     --cr-radius-pill: 999px;
@@ -51,7 +52,7 @@
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--cr-black);
+    color: var(--cr-accent);
     line-height: 1.2;
 }
 
@@ -79,17 +80,24 @@
 
 /* ---- LAYOUT 2 COLUMNAS ---- */
 .ny-carrito .woocommerce:not(:has(.cart-empty)) {
-    display: flex;
+    display: flex !important;
     flex-wrap: wrap;
     gap: 32px;
     align-items: flex-start;
 }
 
-.ny-carrito form.woocommerce-cart-form {
-    flex: 1 1 auto;
-    min-width: 0;
+.ny-carrito .woocommerce-notices-wrapper,
+.ny-carrito .cr-cart-header {
+    flex: 0 0 100%;
     width: 100%;
-    max-width: 100%;
+}
+
+.ny-carrito form.woocommerce-cart-form {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    max-width: none;
+    float: none !important;
 }
 
 .ny-carrito .cart-collaterals {
@@ -101,11 +109,24 @@
     border-radius: 18px;
     border: none;
     box-sizing: border-box;
+    align-self: flex-start;
+    float: none !important;
+    clear: none !important;
 }
 
 .ny-carrito .cart-collaterals .cart_totals {
     width: 100% !important;
     float: none !important;
+}
+
+.ny-carrito .cart_totals .shop_table,
+.ny-carrito .cart_totals table,
+.ny-carrito .cr-shipping-note,
+.ny-carrito .cr-cart-coupon,
+.ny-carrito .wc-proceed-to-checkout {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
 }
 
 /* ---- TABLA DE PRODUCTOS ---- */
@@ -128,7 +149,7 @@
     font-weight: 400;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--cr-muted);
+    color: var(--cr-accent);
     vertical-align: bottom;
 }
 
@@ -152,14 +173,15 @@
 }
 
 .ny-carrito table.cart thead th.product-price {
-    width: 110px;
+    width: 130px;
     text-align: right !important;
-    padding-right: 24px !important;
+    padding-right: 40px !important;
 }
 
 .ny-carrito table.cart thead th.product-quantity {
-    width: 110px;
+    width: 120px;
     text-align: center !important;
+    padding-left: 12px !important;
 }
 
 .ny-carrito table.cart thead th.product-subtotal {
@@ -215,7 +237,7 @@
 
 .ny-carrito table.cart td.product-price {
     text-align: right !important;
-    padding-right: 24px !important;
+    padding-right: 40px !important;
     font-size: 0.95rem;
     font-weight: 400;
     white-space: nowrap;
@@ -223,6 +245,8 @@
 
 .ny-carrito table.cart td.product-quantity {
     text-align: center !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
 }
 
 .ny-carrito table.cart td.product-subtotal {
@@ -335,7 +359,7 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     text-align: center;
-    color: var(--cr-black);
+    color: var(--cr-accent);
 }
 
 .ny-carrito .cart_totals table {
@@ -390,17 +414,25 @@
 }
 
 .ny-carrito .cr-shipping-note {
+    display: block;
+    width: 100%;
+    max-width: 100%;
     margin: 0;
     padding: 18px 0;
     border-bottom: 1px solid var(--cr-border);
+    box-sizing: border-box;
 }
 
 .ny-carrito .cr-shipping-note p {
+    display: block;
+    width: 100%;
+    max-width: 100%;
     margin: 0;
     font-size: 0.8rem;
     line-height: 1.6;
     color: var(--cr-muted);
     font-weight: 400;
+    box-sizing: border-box;
 }
 
 /* ---- CUPÓN EN SIDEBAR ---- */
@@ -579,7 +611,7 @@
 }
 
 /* ---- RESPONSIVE ---- */
-@media (max-width: 991px) {
+@media (max-width: 767px) {
     .ny-carrito .woocommerce:not(:has(.cart-empty)) {
         flex-direction: column;
     }
@@ -588,6 +620,7 @@
     .ny-carrito .cart-collaterals {
         width: 100% !important;
         flex: none;
+        max-width: 100% !important;
     }
 
     .ny-carrito .cr-cart-header {
