@@ -1,0 +1,546 @@
+/* ================================================================
+   CraftRootsMP - Checkout WooCommerce (.ny-compraf)
+   Diseño: facturación izquierda + resumen/pago derecha
+   ================================================================ */
+
+.ny-compraf {
+    --cr-lime: #DFFF70;
+    --cr-black: #111111;
+    --cr-text: #111111;
+    --cr-muted: #6B6B6B;
+    --cr-accent: #581222;
+    --cr-border: #581222;
+    --cr-input-border: #D5D5D5;
+    --cr-sidebar-bg: #F3F3F3;
+    --cr-white: #FFFFFF;
+    --cr-radius-pill: 999px;
+    --cr-radius-input: 8px;
+    --cr-font: "Diagramm-Regular", sans-serif;
+}
+
+.ny-compraf,
+.ny-compraf .woocommerce,
+.ny-compraf .woocommerce *:not([class*="eicon"]):not([class*="fa"]):not(i) {
+    font-family: var(--cr-font) !important;
+}
+
+.ny-compraf .elementor-widget-container,
+.ny-compraf .elementor-shortcode {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.ny-compraf .woocommerce {
+    color: var(--cr-text);
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* ---- CUPÓN (oculto en diseño) ---- */
+.ny-compraf .woocommerce-form-coupon-toggle,
+.ny-compraf form.checkout_coupon {
+    display: none !important;
+}
+
+/* ---- ENCABEZADO FACTURACIÓN ---- */
+.ny-compraf .cr-checkout-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--cr-border);
+}
+
+.ny-compraf .cr-checkout-header__title {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--cr-accent);
+    line-height: 1.2;
+}
+
+.ny-compraf .cr-checkout-header__continue {
+    margin-top: 4px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    color: var(--cr-black);
+    white-space: nowrap;
+}
+
+.ny-compraf .cr-checkout-header__continue:hover {
+    opacity: 0.7;
+}
+
+/* ---- LAYOUT 2 COLUMNAS ---- */
+.ny-compraf form.checkout.woocommerce-checkout {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 32px;
+    align-items: flex-start;
+}
+
+.ny-compraf .woocommerce-notices-wrapper {
+    flex: 0 0 100%;
+    width: 100%;
+}
+
+.ny-compraf #customer_details {
+    flex: 13 1 0;
+    min-width: 0;
+    width: auto !important;
+    float: none !important;
+}
+
+.ny-compraf #order_review_heading {
+    display: none !important;
+}
+
+.ny-compraf #order_review {
+    flex: 7 0 0;
+    min-width: 0;
+    width: auto !important;
+    float: none !important;
+    background: var(--cr-sidebar-bg);
+    padding: 36px 32px 32px !important;
+    border-radius: 18px;
+    box-sizing: border-box;
+    align-self: flex-start;
+}
+
+/* Una sola columna izquierda (facturación + envío + notas) */
+.ny-compraf #customer_details .col2-set {
+    display: block;
+    width: 100%;
+}
+
+.ny-compraf #customer_details .col-1,
+.ny-compraf #customer_details .col-2 {
+    width: 100% !important;
+    float: none !important;
+}
+
+.ny-compraf #customer_details .col-2:empty {
+    display: none;
+}
+
+/* ---- TÍTULOS SECCIÓN (ocultos, usa header custom) ---- */
+.ny-compraf .woocommerce-billing-fields > h3 {
+    display: none !important;
+}
+
+.ny-compraf #ship-to-different-address {
+    margin: 8px 0 20px;
+    font-size: 0.92rem;
+    font-weight: 400;
+    color: var(--cr-black);
+}
+
+.ny-compraf #ship-to-different-address label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.ny-compraf .woocommerce-additional-fields > h3 {
+    display: none !important;
+}
+
+/* ---- CAMPOS DEL FORMULARIO ---- */
+.ny-compraf .woocommerce-billing-fields__field-wrapper,
+.ny-compraf .woocommerce-shipping-fields__field-wrapper,
+.ny-compraf .woocommerce-additional-fields__field-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0;
+}
+
+.ny-compraf .form-row {
+    margin: 0 0 18px !important;
+    padding: 0 !important;
+    width: 100%;
+    float: none !important;
+    clear: none !important;
+}
+
+.ny-compraf .form-row-first,
+.ny-compraf .form-row-last {
+    width: calc(50% - 10px) !important;
+}
+
+.ny-compraf .form-row-wide {
+    width: 100% !important;
+}
+
+.ny-compraf .form-row label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
+    font-weight: 400;
+    color: var(--cr-black);
+    line-height: 1.3;
+}
+
+.ny-compraf .form-row label .required,
+.ny-compraf .form-row label .optional {
+    font-weight: 400;
+}
+
+.ny-compraf .form-row .woocommerce-input-wrapper {
+    display: block;
+    width: 100%;
+}
+
+.ny-compraf .form-row .input-text,
+.ny-compraf .form-row select,
+.ny-compraf .form-row textarea {
+    width: 100% !important;
+    min-height: 46px;
+    padding: 11px 14px !important;
+    border: 1px solid var(--cr-input-border) !important;
+    border-radius: var(--cr-radius-input) !important;
+    background: var(--cr-white) !important;
+    color: var(--cr-black) !important;
+    font-size: 0.92rem !important;
+    box-shadow: none !important;
+    box-sizing: border-box;
+}
+
+.ny-compraf .form-row textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.ny-compraf .form-row select {
+    appearance: auto;
+}
+
+.ny-compraf .select2-container .select2-selection--single {
+    min-height: 46px !important;
+    border: 1px solid var(--cr-input-border) !important;
+    border-radius: var(--cr-radius-input) !important;
+    background: var(--cr-white) !important;
+}
+
+.ny-compraf .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 44px !important;
+    padding-left: 14px !important;
+    color: var(--cr-black) !important;
+}
+
+.ny-compraf .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 44px !important;
+}
+
+.ny-compraf #billing_address_2_field label.screen-reader-text {
+    position: static !important;
+    clip: auto !important;
+    clip-path: none !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 0 8px !important;
+    overflow: visible !important;
+}
+
+/* ---- TABLA RESUMEN DEL PEDIDO ---- */
+.ny-compraf .woocommerce-checkout-review-order-table {
+    width: 100% !important;
+    border: none !important;
+    border-collapse: collapse !important;
+    margin: 0 0 24px !important;
+}
+
+.ny-compraf .woocommerce-checkout-review-order-table thead {
+    display: none !important;
+}
+
+.ny-compraf .woocommerce-checkout-review-order-table tbody tr.cart_item td {
+    padding: 0 0 20px !important;
+    border: none !important;
+    background: transparent !important;
+    vertical-align: top;
+}
+
+.ny-compraf .woocommerce-checkout-review-order-table tbody tr.cart_item td.product-total {
+    display: none !important;
+}
+
+.ny-compraf .woocommerce-checkout-review-order-table tbody tr.cart_item td.product-name {
+    width: 100%;
+    padding-right: 0 !important;
+}
+
+.ny-compraf .cr-checkout-product {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.ny-compraf .cr-checkout-product__thumb {
+    position: relative;
+    flex: 0 0 72px;
+    width: 72px;
+    line-height: 0;
+}
+
+.ny-compraf .cr-checkout-product__thumb img {
+    width: 72px !important;
+    height: 72px !important;
+    max-width: 72px !important;
+    object-fit: contain !important;
+    border-radius: 8px;
+    display: block;
+}
+
+.ny-compraf .cr-checkout-product__qty {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 50%;
+    background: var(--cr-black);
+    color: var(--cr-white);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 22px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.ny-compraf .cr-checkout-product__name {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: var(--cr-black);
+    padding-top: 4px;
+}
+
+.ny-compraf .cr-checkout-product__name .product-quantity {
+    display: none !important;
+}
+
+.ny-compraf .woocommerce-checkout-review-order-table tfoot th,
+.ny-compraf .woocommerce-checkout-review-order-table tfoot td {
+    padding: 20px 0 !important;
+    border: none !important;
+    border-top: 1px solid var(--cr-border) !important;
+    background: transparent !important;
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--cr-black);
+    vertical-align: middle;
+}
+
+.ny-compraf .woocommerce-checkout-review-order-table tfoot th {
+    text-align: left !important;
+    font-weight: 400;
+}
+
+.ny-compraf .woocommerce-checkout-review-order-table tfoot td {
+    text-align: right !important;
+}
+
+.ny-compraf .woocommerce-checkout-review-order-table tfoot tr.cart-subtotal th,
+.ny-compraf .woocommerce-checkout-review-order-table tfoot tr.cart-subtotal td {
+    border-top: none !important;
+    padding-top: 8px !important;
+}
+
+.ny-compraf .woocommerce-checkout-review-order-table tfoot tr.order-total th,
+.ny-compraf .woocommerce-checkout-review-order-table tfoot tr.order-total td {
+    font-size: 1rem;
+    font-weight: 700 !important;
+    border-bottom: none !important;
+    padding-top: 24px !important;
+    padding-bottom: 8px !important;
+}
+
+/* Envío simplificado */
+.ny-compraf .woocommerce-checkout-review-order-table tr.woocommerce-shipping-totals td {
+    text-align: right !important;
+}
+
+.ny-compraf .woocommerce-checkout-review-order-table tr.woocommerce-shipping-totals ul,
+.ny-compraf .woocommerce-checkout-review-order-table tr.woocommerce-shipping-totals input {
+    display: none !important;
+}
+
+.ny-compraf .woocommerce-checkout-review-order-table tr.woocommerce-shipping-totals td .cr-shipping-free {
+    display: block;
+    text-align: right;
+    font-size: 0.95rem;
+    color: var(--cr-black);
+}
+
+.ny-compraf .woocommerce-checkout-review-order-table tr.fee,
+.ny-compraf .woocommerce-checkout-review-order-table tr.tax-total,
+.ny-compraf .woocommerce-checkout-review-order-table tr.cart-discount {
+    display: table-row;
+}
+
+/* ---- PAGO BOLD ---- */
+.ny-compraf #payment {
+    background: transparent !important;
+    border-radius: 0;
+}
+
+.ny-compraf #payment .wc_payment_methods {
+    padding: 0 !important;
+    margin: 0 0 18px !important;
+    border: none !important;
+    list-style: none;
+}
+
+.ny-compraf #payment .wc_payment_method {
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none;
+}
+
+.ny-compraf #payment .payment_method_bold_co > input.input-radio {
+    display: none !important;
+}
+
+.ny-compraf #payment .payment_method_bold_co > label {
+    display: none !important;
+}
+
+.ny-compraf #payment .payment_box.payment_method_bold_co {
+    margin: 0 !important;
+    padding: 22px 20px !important;
+    background: var(--cr-white) !important;
+    border: none !important;
+    border-radius: 14px !important;
+    box-shadow: none !important;
+}
+
+.ny-compraf #payment .payment_box.payment_method_bold_co::before {
+    display: none !important;
+}
+
+.ny-compraf #bold_co_container_info_checkout_page,
+.ny-compraf #bold_co_checkout_page,
+.ny-compraf bold-checkout-element {
+    width: 100%;
+}
+
+.ny-compraf #bold_co_checkout_page_body img {
+    max-width: 70px;
+    height: auto;
+}
+
+.ny-compraf .bold_co_checkout_page_body_text,
+.ny-compraf #bold_co_checkout_page_footer_title {
+    font-family: var(--cr-font) !important;
+    font-size: 0.88rem !important;
+    line-height: 1.5 !important;
+    color: var(--cr-muted) !important;
+}
+
+.ny-compraf #bold_co_checkout_page_footer {
+    margin-top: 14px;
+}
+
+.ny-compraf #bold_co_checkout_page_footer_icons {
+    max-width: 100%;
+    height: auto;
+    margin-top: 8px;
+}
+
+/* ---- PRIVACIDAD Y BOTÓN ---- */
+.ny-compraf #payment .form-row.place-order {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+.ny-compraf .woocommerce-terms-and-conditions-wrapper {
+    margin: 0 0 18px !important;
+}
+
+.ny-compraf .woocommerce-privacy-policy-text p {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--cr-muted);
+}
+
+.ny-compraf .woocommerce-privacy-policy-link {
+    color: var(--cr-accent) !important;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.ny-compraf #place_order {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 16px 24px !important;
+    border: none !important;
+    border-radius: var(--cr-radius-pill) !important;
+    background: var(--cr-lime) !important;
+    color: var(--cr-black) !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    text-align: center;
+    box-shadow: none !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ny-compraf #place_order:hover {
+    background: #d4f85f !important;
+    color: var(--cr-black) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Stripe express dentro del resumen */
+.ny-compraf #order_review .wc-stripe-express-checkout-element {
+    margin-bottom: 16px;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 767px) {
+    .ny-compraf form.checkout.woocommerce-checkout {
+        flex-direction: column;
+    }
+
+    .ny-compraf #customer_details,
+    .ny-compraf #order_review {
+        flex: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .ny-compraf .cr-checkout-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ny-compraf .form-row-first,
+    .ny-compraf .form-row-last {
+        width: 100% !important;
+    }
+
+    .ny-compraf #order_review {
+        padding: 28px 22px 24px !important;
+    }
+
+    .ny-compraf .cr-checkout-header__continue {
+        font-size: max(11px, calc(0.82rem / 2));
+    }
+}

@@ -1,7 +1,9 @@
 (function () {
     'use strict';
 
-    const SHIPPING_NOTE = 'Envío gratis a todo Colombia en compras elegibles. Los tiempos de entrega se calculan según tu ciudad al finalizar la compra.';
+    const SHIPPING_NOTE = 'Envío Gratis a todo Colombia.<br>Envios internacionales comunicarse vía whatsapp para cotizar el valor del envio.<br>Nuestros envios tardan entre 5 y 8 días hábiles.';
+    const CONTINUE_SHOPPING_URL = 'https://laforeste.com/los-guardianes/';
+    const REMOVE_ICON_URL = 'https://laforeste.com/wp-content/themes/hello-elementor/craftrootsmp/borrar.svg';
 
     function getShopUrl() {
         const backLink = document.querySelector('.ny-carrito .return-to-shop a, .ny-carrito a.wc-backward');
@@ -9,6 +11,17 @@
             return backLink.getAttribute('href');
         }
         return '/shop/';
+    }
+
+    function removeEmptyTableColumns(container) {
+        const removeHeader = container.querySelector('thead th.product-remove');
+        if (removeHeader) {
+            removeHeader.remove();
+        }
+
+        container.querySelectorAll('td.product-remove').forEach(function (cell) {
+            cell.remove();
+        });
     }
 
     function setSpanishTableHeaders(container) {
@@ -35,6 +48,14 @@
             if (removeLink && nameCell && !nameCell.contains(removeLink)) {
                 nameCell.appendChild(removeLink);
             }
+        });
+    }
+
+    function replaceRemoveIcons(container) {
+        container.querySelectorAll('a.remove').forEach(function (link) {
+            link.classList.add('cr-remove-item');
+            link.setAttribute('aria-label', 'Eliminar producto');
+            link.innerHTML = '<img src="' + REMOVE_ICON_URL + '" alt="" width="20" height="20" loading="lazy">';
         });
     }
 
@@ -92,7 +113,7 @@
         });
     }
 
-    function buildCartHeader(container, itemCount, shopUrl) {
+    function buildCartHeader(container, itemCount) {
         if (container.querySelector('.cr-cart-header')) {
             return;
         }
@@ -109,7 +130,7 @@
                 '<h1 class="cr-cart-header__title">Carrito de compras</h1>' +
                 '<p class="cr-cart-header__count">(' + itemCount + ' ' + (itemCount === 1 ? 'Producto' : 'Productos') + ')</p>' +
             '</div>' +
-            '<a href="' + shopUrl + '" class="cr-cart-header__continue">Seguir comprando</a>';
+            '<a href="' + CONTINUE_SHOPPING_URL + '" class="cr-cart-header__continue">Seguir comprando</a>';
 
         container.insertBefore(header, form);
     }
@@ -172,25 +193,74 @@
     }
 
     function addShippingNote(cartTotals) {
-        if (!cartTotals || cartTotals.querySelector('.cr-shipping-note')) {
+        if (!cartTotals || cartTotals.querySelector('.cr-shipping-note-row')) {
             return;
         }
 
-        const orderTotalRow = cartTotals.querySelector('.order-total');
-        if (!orderTotalRow) {
+        const subtotalRow = cartTotals.querySelector('.cart-subtotal');
+        if (!subtotalRow || !subtotalRow.parentNode) {
             return;
         }
 
-        const note = document.createElement('div');
-        note.className = 'cr-shipping-note';
-        note.innerHTML = '<p>' + SHIPPING_NOTE + '</p>';
-        orderTotalRow.parentNode.insertBefore(note, orderTotalRow);
+        const row = document.createElement('tr');
+        row.className = 'cr-shipping-note-row';
+
+        const cell = document.createElement('td');
+        cell.colSpan = 2;
+        cell.className = 'cr-shipping-note-cell';
+        cell.innerHTML = '<div class="cr-shipping-note"><p>' + SHIPPING_NOTE + '</p></div>';
+
+        row.appendChild(cell);
+        subtotalRow.insertAdjacentElement('afterend', row);
     }
 
-    function setupSidebarActions(container, cartTotals, shopUrl) {
+    function enableCartUpdateButton(form) {
+        const hiddenUpdate = form && form.querySelector('button[name="update_cart"]');
+        if (!hiddenUpdate) {
+            return;
+        }
+
+        hiddenUpdate.disabled = false;
+        hiddenUpdate.removeAttribute('aria-disabled');
+    }
+
+    function bindQuantityUpdateListeners(container, form, visibleUpdate) {
+        if (!form) {
+            return;
+        }
+
+        const syncState = function () {
+            const hiddenUpdate = form.querySelector('button[name="update_cart"]');
+            if (!hiddenUpdate || !visibleUpdate) {
+                return;
+            }
+
+            visibleUpdate.disabled = hiddenUpdate.disabled;
+            if (hiddenUpdate.disabled) {
+                visibleUpdate.setAttribute('aria-disabled', 'true');
+            } else {
+                visibleUpdate.removeAttribute('aria-disabled');
+            }
+        };
+
+        container.querySelectorAll('.woocommerce-cart-form .qty').forEach(function (qty) {
+            qty.addEventListener('change', function () {
+                enableCartUpdateButton(form);
+                syncState();
+            });
+            qty.addEventListener('input', function () {
+                enableCartUpdateButton(form);
+                syncState();
+            });
+        });
+
+        syncState();
+    }
+
+    function setupSidebarActions(container, cartTotals) {
         const form = container.querySelector('form.woocommerce-cart-form');
         const checkoutButton = cartTotals.querySelector('.checkout-button');
-        const updateButton = container.querySelector('[name="update_cart"]');
+        let hiddenUpdate = form ? form.querySelector('button[name="update_cart"]') : null;
 
         if (checkoutButton) {
             checkoutButton.textContent = 'Finalizar compra';
@@ -203,24 +273,56 @@
 
         if (checkoutButton && !cartTotals.querySelector('.cr-continue-shopping')) {
             const continueLink = document.createElement('a');
-            continueLink.href = shopUrl;
+            continueLink.href = CONTINUE_SHOPPING_URL;
             continueLink.className = 'cr-continue-shopping';
             continueLink.textContent = 'Seguir comprando';
             checkoutButton.insertAdjacentElement('afterend', continueLink);
         }
 
-        if (updateButton && form && !cartTotals.querySelector('.cr-update-cart')) {
-            updateButton.classList.add('cr-update-cart');
-            updateButton.textContent = 'Actualizar carrito';
-            updateButton.style.display = 'block';
-            linkFieldsToCartForm(form, updateButton);
+        if (form && !cartTotals.querySelector('.cr-update-cart-wrap')) {
+            if (hiddenUpdate && !form.contains(hiddenUpdate)) {
+                form.appendChild(hiddenUpdate);
+            }
+
+            if (!hiddenUpdate) {
+                hiddenUpdate = document.createElement('button');
+                hiddenUpdate.type = 'submit';
+                hiddenUpdate.name = 'update_cart';
+                hiddenUpdate.value = '1';
+                hiddenUpdate.className = 'button cr-update-cart-hidden';
+                form.appendChild(hiddenUpdate);
+            }
+
+            hiddenUpdate.classList.add('cr-update-cart-hidden', 'button');
+            hiddenUpdate.type = 'submit';
+            hiddenUpdate.name = 'update_cart';
+            hiddenUpdate.value = hiddenUpdate.value || '1';
+            hiddenUpdate.style.display = 'none';
+            hiddenUpdate.setAttribute('aria-hidden', 'true');
+
+            const visibleUpdate = document.createElement('button');
+            visibleUpdate.type = 'button';
+            visibleUpdate.className = 'cr-update-cart';
+            visibleUpdate.textContent = 'Actualizar carrito';
+
+            visibleUpdate.addEventListener('click', function (event) {
+                event.preventDefault();
+                enableCartUpdateButton(form);
+                hiddenUpdate.click();
+            });
+
+            const wrap = document.createElement('div');
+            wrap.className = 'cr-update-cart-wrap';
+            wrap.appendChild(visibleUpdate);
 
             const proceedBox = cartTotals.querySelector('.wc-proceed-to-checkout');
             if (proceedBox) {
-                proceedBox.appendChild(updateButton);
+                proceedBox.insertAdjacentElement('afterend', wrap);
             } else {
-                cartTotals.appendChild(updateButton);
+                cartTotals.appendChild(wrap);
             }
+
+            bindQuantityUpdateListeners(container, form, visibleUpdate);
         }
     }
 
@@ -241,24 +343,31 @@
             return;
         }
 
-        const shopUrl = getShopUrl();
         const cartTotals = container.querySelector('.cart_totals');
 
-        buildCartHeader(container, itemCount, shopUrl);
+        buildCartHeader(container, itemCount);
         setSpanishTableHeaders(container);
         moveRemoveIntoProductName(container);
+        replaceRemoveIcons(container);
+        removeEmptyTableColumns(container);
 
         container.querySelectorAll('.quantity input.qty').forEach(initQuantityStepper);
 
         if (cartTotals) {
             moveCouponToSidebar(container, cartTotals);
             addShippingNote(cartTotals);
-            setupSidebarActions(container, cartTotals, shopUrl);
+            setupSidebarActions(container, cartTotals);
         }
 
         container.classList.add('cr-cart-ready');
     }
 
     document.addEventListener('DOMContentLoaded', initCraftRootsCart);
-    document.addEventListener('updated_wc_div', initCraftRootsCart);
+    document.addEventListener('updated_wc_div', function () {
+        const container = document.querySelector('.ny-carrito .woocommerce');
+        if (container) {
+            container.classList.remove('cr-cart-ready');
+        }
+        initCraftRootsCart();
+    });
 })();

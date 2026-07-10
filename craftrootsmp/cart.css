@@ -6,18 +6,32 @@
 .ny-carrito {
     --cr-lime: #DFFF70;
     --cr-black: #111111;
-    --cr-text: #2B2B2B;
-    --cr-muted: #6B7280;
-    --cr-border: #E8E8E8;
-    --cr-sidebar-bg: #F4F4F5;
+    --cr-text: #111111;
+    --cr-muted: #6B6B6B;
+    --cr-accent: #581222;
+    --cr-border: #581222;
+    --cr-sidebar-bg: #F3F3F3;
     --cr-white: #FFFFFF;
     --cr-radius-pill: 999px;
-    --cr-font: "Segoe UI", system-ui, -apple-system, sans-serif;
+    --cr-font: "Diagramm-Regular", sans-serif;
+}
+
+.ny-carrito,
+.ny-carrito .woocommerce,
+.ny-carrito .woocommerce *:not([class*="eicon"]):not([class*="fa"]):not(i) {
+    font-family: var(--cr-font) !important;
+}
+
+.ny-carrito .elementor-widget-container,
+.ny-carrito .elementor-shortcode {
+    width: 100% !important;
+    max-width: 100% !important;
 }
 
 .ny-carrito .woocommerce {
-    font-family: var(--cr-font);
     color: var(--cr-text);
+    width: 100% !important;
+    max-width: 100% !important;
 }
 
 /* ---- ENCABEZADO ---- */
@@ -38,7 +52,7 @@
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--cr-black);
+    color: var(--cr-accent);
     line-height: 1.2;
 }
 
@@ -66,26 +80,38 @@
 
 /* ---- LAYOUT 2 COLUMNAS ---- */
 .ny-carrito .woocommerce:not(:has(.cart-empty)) {
-    display: flex;
+    display: flex !important;
     flex-wrap: wrap;
     gap: 32px;
     align-items: flex-start;
 }
 
+.ny-carrito .woocommerce-notices-wrapper,
+.ny-carrito .cr-cart-header {
+    flex: 0 0 100%;
+    width: 100%;
+}
+
 .ny-carrito form.woocommerce-cart-form {
-    flex: 1 1 58%;
+    flex: 13 1 0;
     min-width: 0;
+    width: auto;
+    max-width: none;
+    float: none !important;
 }
 
 .ny-carrito .cart-collaterals {
-    flex: 0 0 360px;
-    width: 360px;
-    max-width: 100%;
+    flex: 7 0 0;
+    width: auto;
+    max-width: none;
     background: var(--cr-sidebar-bg);
-    padding: 28px 26px 24px !important;
+    padding: 36px 32px 32px !important;
     border-radius: 18px;
-    border: 1px solid #ECECEC;
+    border: none;
     box-sizing: border-box;
+    align-self: flex-start;
+    float: none !important;
+    clear: none !important;
 }
 
 .ny-carrito .cart-collaterals .cart_totals {
@@ -93,34 +119,80 @@
     float: none !important;
 }
 
+.ny-carrito .cart_totals .shop_table,
+.ny-carrito .cart_totals table,
+.ny-carrito .cr-shipping-note,
+.ny-carrito .cr-cart-coupon,
+.ny-carrito .wc-proceed-to-checkout {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+}
+
 /* ---- TABLA DE PRODUCTOS ---- */
-.ny-carrito table.cart {
-    width: 100%;
+.ny-carrito form.woocommerce-cart-form table.cart {
+    width: 100% !important;
+    max-width: 100% !important;
     border: none !important;
     border-collapse: collapse !important;
     border-spacing: 0 !important;
-    margin: 0;
+    margin: 0 !important;
+    table-layout: fixed;
 }
 
 .ny-carrito table.cart thead th {
-    padding: 0 12px 14px !important;
+    padding: 0 18px 16px !important;
     border: none !important;
     border-bottom: 1px solid var(--cr-border) !important;
     background: transparent !important;
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--cr-muted);
+    color: var(--cr-accent);
+    vertical-align: bottom;
 }
 
 .ny-carrito table.cart thead th.product-remove {
-    width: 0;
+    display: none !important;
+    width: 0 !important;
     padding: 0 !important;
     border: none !important;
-    font-size: 0;
-    line-height: 0;
-    overflow: hidden;
+}
+
+.ny-carrito table.cart thead th.product-thumbnail {
+    width: 120px;
+    max-width: 120px;
+    padding-left: 0 !important;
+    padding-right: 20px !important;
+}
+
+.ny-carrito table.cart thead th.product-name {
+    width: auto;
+    text-align: left;
+    padding-left: 0 !important;
+    padding-right: 18px !important;
+}
+
+.ny-carrito table.cart thead th.product-price {
+    width: 140px;
+    text-align: right !important;
+    padding-right: 28px !important;
+    padding-left: 18px !important;
+}
+
+.ny-carrito table.cart thead th.product-quantity {
+    width: 130px;
+    text-align: center !important;
+    padding-left: 28px !important;
+    padding-right: 18px !important;
+}
+
+.ny-carrito table.cart thead th.product-subtotal {
+    width: 120px;
+    text-align: right !important;
+    padding-right: 0 !important;
+    padding-left: 18px !important;
 }
 
 .ny-carrito table.cart tr.cart_item {
@@ -135,7 +207,7 @@
 }
 
 .ny-carrito table.cart tr.cart_item td {
-    padding: 22px 12px !important;
+    padding: 24px 18px !important;
     border: none !important;
     border-bottom: 1px solid var(--cr-border) !important;
     background: transparent !important;
@@ -144,29 +216,67 @@
 
 .ny-carrito table.cart td.product-remove {
     display: none !important;
+    width: 0 !important;
+    padding: 0 !important;
 }
 
 .ny-carrito table.cart td.product-thumbnail {
-    width: 72px;
+    width: 120px;
+    max-width: 120px;
     padding-left: 0 !important;
+    padding-right: 20px !important;
+    vertical-align: middle !important;
+}
+
+.ny-carrito table.cart td.product-thumbnail a {
+    display: block;
+    line-height: 0;
 }
 
 .ny-carrito table.cart td.product-thumbnail img {
-    width: 64px !important;
-    height: 64px !important;
-    object-fit: cover;
+    width: auto !important;
+    max-width: 120px !important;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: contain !important;
     border-radius: 8px;
+    display: block;
 }
 
 .ny-carrito table.cart td.product-name {
     position: relative;
-    padding-right: 36px !important;
-    min-width: 220px;
+    padding-right: 40px !important;
+    padding-left: 0 !important;
+    text-align: left !important;
+}
+
+.ny-carrito table.cart td.product-price {
+    text-align: right !important;
+    padding-right: 28px !important;
+    padding-left: 18px !important;
+    font-size: 0.95rem;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.ny-carrito table.cart td.product-quantity {
+    text-align: center !important;
+    padding-left: 28px !important;
+    padding-right: 18px !important;
+}
+
+.ny-carrito table.cart td.product-subtotal {
+    text-align: right !important;
+    padding-right: 0 !important;
+    padding-left: 18px !important;
+    font-size: 0.95rem;
+    font-weight: 400;
+    white-space: nowrap;
 }
 
 .ny-carrito table.cart .product-name a {
     color: var(--cr-black) !important;
-    font-weight: 500;
+    font-weight: 400;
     font-size: 0.98rem;
     line-height: 1.45;
     text-decoration: none;
@@ -177,33 +287,37 @@
 }
 
 .ny-carrito table.cart .product-name .remove,
-.ny-carrito table.cart td.product-name > a.remove {
+.ny-carrito table.cart td.product-name > a.remove,
+.ny-carrito table.cart a.remove.cr-remove-item {
     position: absolute;
     top: 50%;
     right: 0;
     transform: translateY(-50%);
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
-    font-size: 1.15rem;
-    line-height: 1;
-    color: var(--cr-muted) !important;
+    font-size: 0 !important;
+    line-height: 0;
+    color: transparent !important;
     text-decoration: none;
-    border-radius: 50%;
+    background: transparent !important;
+    border-radius: 0;
+    overflow: hidden;
 }
 
-.ny-carrito table.cart .product-name .remove:hover {
-    color: var(--cr-black) !important;
-    background: #eee;
+.ny-carrito table.cart a.remove.cr-remove-item img {
+    display: block;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
 }
 
-.ny-carrito table.cart td.product-price,
-.ny-carrito table.cart td.product-subtotal {
-    font-size: 0.95rem;
-    font-weight: 500;
-    white-space: nowrap;
+.ny-carrito table.cart .product-name .remove:hover,
+.ny-carrito table.cart a.remove.cr-remove-item:hover {
+    opacity: 0.7;
+    background: transparent !important;
 }
 
 /* ---- CANTIDAD +/- ---- */
@@ -264,49 +378,61 @@
 
 /* ---- SIDEBAR: RESUMEN ---- */
 .ny-carrito .cart_totals > h2 {
-    margin: 0 0 22px;
-    padding: 0;
+    margin: 0 0 28px;
+    padding: 0 0 28px;
     border: none;
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--cr-border);
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     text-align: center;
-    color: var(--cr-black);
+    color: var(--cr-accent);
 }
 
 .ny-carrito .cart_totals table {
     width: 100%;
     border: none !important;
     margin-bottom: 0;
+    border-collapse: collapse !important;
 }
 
 .ny-carrito .cart_totals table th,
 .ny-carrito .cart_totals table td {
-    padding: 14px 0 !important;
+    padding: 24px 0 !important;
     border: none !important;
-    border-top: 1px solid var(--cr-border) !important;
+    border-bottom: 1px solid var(--cr-border) !important;
     background: transparent !important;
     font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--cr-black);
+    vertical-align: middle;
 }
 
-.ny-carrito .cart_totals table tr:first-child th,
-.ny-carrito .cart_totals table tr:first-child td {
-    border-top: none !important;
+.ny-carrito .cart_totals table th {
+    text-align: left !important;
+    font-weight: 400;
+}
+
+.ny-carrito .cart_totals table td {
+    text-align: right !important;
+    font-weight: 400;
 }
 
 .ny-carrito .cart_totals .cart-subtotal th,
 .ny-carrito .cart_totals .cart-subtotal td {
-    padding-top: 0 !important;
+    padding-top: 8px !important;
+    padding-bottom: 24px !important;
 }
 
 .ny-carrito .cart_totals .order-total th,
 .ny-carrito .cart_totals .order-total td {
-    font-size: 1.05rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 600;
     color: var(--cr-black);
-    border-top: 1px solid var(--cr-border) !important;
-    padding-top: 18px !important;
+    border-bottom: none !important;
+    padding-top: 28px !important;
+    padding-bottom: 8px !important;
 }
 
 /* Ocultar fila de envío de la tabla (usamos texto informativo) */
@@ -316,22 +442,50 @@
     display: none;
 }
 
+.ny-carrito .cart_totals tr.cr-shipping-note-row {
+    display: table-row;
+    width: 100%;
+}
+
+.ny-carrito .cart_totals tr.cr-shipping-note-row td.cr-shipping-note-cell {
+    display: table-cell !important;
+    width: 100% !important;
+    padding: 24px 0 !important;
+    border: none !important;
+    border-bottom: 1px solid var(--cr-border) !important;
+    background: transparent !important;
+    text-align: left !important;
+}
+
 .ny-carrito .cr-shipping-note {
-    margin: 4px 0 0;
-    padding: 14px 0 16px;
-    border-bottom: 1px solid var(--cr-border);
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+    text-align: left;
 }
 
 .ny-carrito .cr-shipping-note p {
+    display: block;
+    width: 100%;
+    max-width: 100%;
     margin: 0;
-    font-size: 0.82rem;
-    line-height: 1.55;
+    font-size: 0.8rem;
+    line-height: 1.65;
     color: var(--cr-muted);
+    font-weight: 400;
+    box-sizing: border-box;
+    white-space: normal;
+    word-break: normal;
+    text-align: left !important;
 }
 
 /* ---- CUPÓN EN SIDEBAR ---- */
 .ny-carrito .cr-cart-coupon {
-    margin-top: 18px;
+    margin-top: 26px;
+    padding-top: 26px;
+    border-top: 1px solid var(--cr-border);
 }
 
 .ny-carrito .cr-cart-coupon .coupon {
@@ -382,7 +536,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-top: 18px;
+    margin-top: 26px;
     padding: 0;
 }
 
@@ -434,25 +588,59 @@
     background: #fafafa;
 }
 
-.ny-carrito .cr-update-cart {
-    order: 3;
-    display: block;
-    width: 100%;
-    margin: 6px 0 0;
-    padding: 8px 0;
-    border: none;
-    background: transparent;
-    color: var(--cr-black);
-    font-size: 0.88rem;
-    font-weight: 500;
-    text-decoration: underline;
-    text-underline-offset: 3px;
+.ny-carrito .cr-update-cart-wrap {
+    margin-top: 14px;
+    padding-top: 6px;
     text-align: center;
-    cursor: pointer;
 }
 
-.ny-carrito .cr-update-cart:hover {
-    opacity: 0.7;
+.ny-carrito button.cr-update-cart-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+}
+
+.ny-carrito .cr-update-cart,
+.ny-carrito button.cr-update-cart {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    display: inline-block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: var(--cr-black) !important;
+    font-family: var(--cr-font) !important;
+    font-size: 0.92rem !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+    letter-spacing: 0 !important;
+    line-height: 1.5 !important;
+    text-transform: none !important;
+    text-decoration: underline !important;
+    text-underline-offset: 4px;
+    text-align: center !important;
+    cursor: pointer !important;
+}
+
+.ny-carrito .cr-update-cart:hover,
+.ny-carrito button.cr-update-cart:hover {
+    opacity: 0.65 !important;
+    background: transparent !important;
+    color: var(--cr-black) !important;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 /* Stripe express dentro del sidebar (si está activo) */
@@ -477,7 +665,7 @@
 }
 
 /* ---- RESPONSIVE ---- */
-@media (max-width: 991px) {
+@media (max-width: 767px) {
     .ny-carrito .woocommerce:not(:has(.cart-empty)) {
         flex-direction: column;
     }
@@ -485,61 +673,144 @@
     .ny-carrito form.woocommerce-cart-form,
     .ny-carrito .cart-collaterals {
         width: 100% !important;
-        flex: none;
+        flex: none !important;
+        max-width: 100% !important;
     }
 
     .ny-carrito .cr-cart-header {
         flex-direction: column;
         align-items: flex-start;
     }
-}
 
-@media (max-width: 768px) {
-    .ny-carrito table.shop_table_responsive thead {
-        display: none;
+    /* Tabla: ocultar encabezados */
+    .ny-carrito table.cart thead {
+        display: none !important;
     }
 
-    .ny-carrito table.shop_table_responsive tr.cart_item {
+    .ny-carrito table.cart,
+    .ny-carrito table.cart tbody {
         display: block;
-        padding: 16px 0;
-        border-bottom: 1px solid var(--cr-border);
+        width: 100% !important;
     }
 
-    .ny-carrito table.shop_table_responsive tr.cart_item td {
+    /* Item vertical: imagen → nombre → precio → cantidad → subtotal */
+    .ny-carrito table.cart tr.cart_item {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        position: relative;
+        width: 100% !important;
+        padding: 20px 44px 24px 0 !important;
+        margin: 0 0 8px;
+        border-bottom: 1px solid var(--cr-border) !important;
+        box-sizing: border-box;
+    }
+
+    .ny-carrito table.cart tr.cart_item td {
         display: block;
-        text-align: left !important;
-        padding: 8px 0 !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 0 12px !important;
         border: none !important;
-    }
-
-    .ny-carrito table.shop_table_responsive tr.cart_item td::before {
-        content: attr(data-title);
-        display: block;
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: var(--cr-muted);
-        margin-bottom: 4px;
-    }
-
-    .ny-carrito table.shop_table_responsive td.product-thumbnail {
         text-align: left !important;
     }
 
-    .ny-carrito table.shop_table_responsive td.product-thumbnail::before {
-        display: none;
+    .ny-carrito table.cart tr.cart_item td::before {
+        display: none !important;
+        content: none !important;
     }
 
-    .ny-carrito table.shop_table_responsive td.product-name {
+    .ny-carrito table.cart tr.cart_item td.product-thumbnail {
+        order: 1;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 14px !important;
+    }
+
+    .ny-carrito table.cart tr.cart_item td.product-thumbnail img {
+        width: auto !important;
+        max-width: 120px !important;
+        height: auto !important;
+    }
+
+    .ny-carrito table.cart tr.cart_item td.product-name {
+        order: 2;
+        position: static !important;
+        padding-right: 0 !important;
+        margin-bottom: 10px !important;
+    }
+
+    .ny-carrito table.cart tr.cart_item td.product-name a:not(.remove) {
+        font-size: 1rem !important;
+        line-height: 1.45 !important;
         padding-right: 0 !important;
     }
 
+    .ny-carrito table.cart tr.cart_item td.product-price {
+        order: 3;
+        font-size: 1.35rem !important;
+        font-weight: 500 !important;
+        line-height: 1.2 !important;
+        margin-bottom: 14px !important;
+        padding: 0 !important;
+    }
+
+    .ny-carrito table.cart tr.cart_item td.product-quantity {
+        order: 4;
+        margin-bottom: 14px !important;
+        padding: 0 !important;
+        text-align: left !important;
+    }
+
+    .ny-carrito table.cart tr.cart_item td.product-subtotal {
+        order: 5;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Icono eliminar arriba a la derecha del item */
+    .ny-carrito table.cart tr.cart_item a.remove,
+    .ny-carrito table.cart tr.cart_item a.remove.cr-remove-item {
+        position: absolute !important;
+        top: 16px !important;
+        right: 0 !important;
+        left: auto !important;
+        transform: none !important;
+        margin: 0 !important;
+        z-index: 2;
+    }
+
+    /* Cupón: altura visible en móvil */
     .ny-carrito .cr-cart-coupon .coupon {
         flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .ny-carrito .cr-cart-coupon #coupon_code {
+        width: 100% !important;
+        min-width: 100% !important;
+        min-height: 48px !important;
+        height: 48px !important;
+        padding: 0 18px !important;
+        line-height: 48px !important;
+        font-size: 0.95rem !important;
+        box-sizing: border-box !important;
+        display: block !important;
     }
 
     .ny-carrito .cr-cart-coupon [name="apply_coupon"] {
-        width: 100%;
+        width: 100% !important;
+        min-height: 48px !important;
+        height: 48px !important;
+    }
+
+    /* Seguir comprando: mitad del tamaño de letra en móvil */
+    .ny-carrito .cr-continue-shopping {
+        font-size: max(11px, calc(0.88rem / 2)) !important;
+        padding: 12px 18px !important;
+        letter-spacing: 0.02em;
     }
 }
