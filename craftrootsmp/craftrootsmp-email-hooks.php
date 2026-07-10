@@ -70,7 +70,7 @@ function craftrootsmp_locate_email_templates($template, $template_name, $templat
 
     return $template;
 }
-add_filter('woocommerce_locate_template', 'craftrootsmp_locate_email_templates', 20, 3);
+add_filter('woocommerce_locate_template', 'craftrootsmp_locate_email_templates', 999, 3);
 
 /**
  * Marca el contexto de renderizado para filtros compartidos.
