@@ -16,6 +16,10 @@ if (file_exists($craftrootsmp_dir . '/craftrootsmp-cart-hooks.php')) {
     require $craftrootsmp_dir . '/craftrootsmp-cart-hooks.php';
 }
 
+if (file_exists($craftrootsmp_dir . '/craftrootsmp-checkout-hooks.php')) {
+    require $craftrootsmp_dir . '/craftrootsmp-checkout-hooks.php';
+}
+
 if (file_exists($craftrootsmp_dir . '/craftrootsmp-stripe-hooks.php')) {
     require $craftrootsmp_dir . '/craftrootsmp-stripe-hooks.php';
 }

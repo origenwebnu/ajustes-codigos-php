@@ -1,0 +1,218 @@
+<?php
+/**
+ * CraftRootsMP - Assets y personalización del checkout WooCommerce
+ *
+ * En functions.php del child theme:
+ * require get_stylesheet_directory() . '/craftrootsmp/craftrootsmp-checkout-hooks.php';
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+function craftrootsmp_enqueue_checkout_assets() {
+    if (!is_checkout()) {
+        return;
+    }
+
+    $base_uri = get_stylesheet_directory_uri() . '/craftrootsmp';
+    $base_dir = get_stylesheet_directory() . '/craftrootsmp';
+
+    $css_version = file_exists($base_dir . '/checkout.css')
+        ? filemtime($base_dir . '/checkout.css')
+        : '1.0.0';
+
+    $js_version = file_exists($base_dir . '/checkout.js')
+        ? filemtime($base_dir . '/checkout.js')
+        : '1.0.0';
+
+    wp_enqueue_style(
+        'craftrootsmp-checkout',
+        $base_uri . '/checkout.css',
+        [],
+        $css_version
+    );
+
+    wp_enqueue_script(
+        'craftrootsmp-checkout',
+        $base_uri . '/checkout.js',
+        ['jquery'],
+        $js_version,
+        true
+    );
+}
+add_action('wp_enqueue_scripts', 'craftrootsmp_enqueue_checkout_assets', 40);
+
+/**
+ * Ajusta etiquetas y disposición de campos del checkout.
+ */
+function craftrootsmp_checkout_fields_layout($fields) {
+    if (empty($fields['billing'])) {
+        return $fields;
+    }
+
+    $billing = &$fields['billing'];
+
+    if (isset($billing['billing_first_name'])) {
+        $billing['billing_first_name']['label'] = 'Nombres';
+    }
+
+    if (isset($billing['billing_last_name'])) {
+        $billing['billing_last_name']['label'] = 'Apellidos';
+    }
+
+    $id_field_keys = [
+        'billing_document',
+        'billing_cedula',
+        'billing_identification',
+        'billing_id_number',
+        'billing_nit',
+    ];
+
+    $id_field_key = null;
+    foreach ($id_field_keys as $key) {
+        if (isset($billing[$key])) {
+            $id_field_key = $key;
+            break;
+        }
+    }
+
+    if ($id_field_key) {
+        $billing[$id_field_key]['label'] = 'Número de Identificación';
+        $billing[$id_field_key]['class'] = ['form-row-first'];
+        $billing[$id_field_key]['priority'] = 30;
+    }
+
+    if (isset($billing['billing_country'])) {
+        $billing['billing_country']['class'] = $id_field_key
+            ? ['form-row-last', 'address-field', 'update_totals_on_change']
+            : ['form-row-first', 'address-field', 'update_totals_on_change'];
+        $billing['billing_country']['priority'] = 35;
+    }
+
+    if (isset($billing['billing_address_1'])) {
+        $billing['billing_address_1']['label'] = 'Calle, Número.';
+        $billing['billing_address_1']['placeholder'] = '';
+    }
+
+    if (isset($billing['billing_address_2'])) {
+        $billing['billing_address_2']['label'] = 'Casa, apartamento, etc. (Opcional)';
+        $billing['billing_address_2']['label_class'] = [];
+        $billing['billing_address_2']['placeholder'] = '';
+    }
+
+    if (isset($billing['billing_city'])) {
+        $billing['billing_city']['label'] = 'Ciudad';
+        $billing['billing_city']['class'] = ['form-row-first', 'address-field'];
+    }
+
+    if (isset($billing['billing_state'])) {
+        $billing['billing_state']['label'] = 'Departamento';
+        $billing['billing_state']['class'] = ['form-row-last', 'address-field'];
+    }
+
+    if (isset($billing['billing_postcode'])) {
+        $billing['billing_postcode']['label'] = 'Código postal / Zip Code (opcional)';
+        $billing['billing_postcode']['class'] = ['form-row-first', 'address-field'];
+    }
+
+    if (isset($billing['billing_phone'])) {
+        $billing['billing_phone']['label'] = 'Teléfono';
+        $billing['billing_phone']['class'] = ['form-row-last'];
+    }
+
+    if (isset($billing['billing_email'])) {
+        $billing['billing_email']['label'] = 'Correo electrónico';
+        $billing['billing_email']['class'] = ['form-row-wide'];
+    }
+
+    if (!empty($fields['order']['order_comments'])) {
+        $fields['order']['order_comments']['label'] = 'Notas adicionales (opcional)';
+        $fields['order']['order_comments']['placeholder'] = '';
+    }
+
+    return $fields;
+}
+add_filter('woocommerce_checkout_fields', 'craftrootsmp_checkout_fields_layout', 20);
+
+/**
+ * Obtiene miniatura del producto usando la primera imagen de galería.
+ */
+function craftrootsmp_get_gallery_product_image($product, $size = 'woocommerce_thumbnail') {
+    if (!$product || !is_a($product, 'WC_Product')) {
+        return '';
+    }
+
+    $product_id = $product->get_id();
+
+    if ($product->is_type('variation')) {
+        $product_id = $product->get_parent_id();
+        $product = wc_get_product($product_id);
+    }
+
+    if (!$product) {
+        return '';
+    }
+
+    $gallery_ids = $product->get_gallery_image_ids();
+
+    if (!empty($gallery_ids)) {
+        $image = wp_get_attachment_image(
+            (int) $gallery_ids[0],
+            $size,
+            false,
+            [
+                'class' => 'attachment-woocommerce_thumbnail size-woocommerce_thumbnail cr-checkout-gallery-thumb',
+                'alt'   => $product->get_name(),
+            ]
+        );
+
+        if ($image) {
+            return $image;
+        }
+    }
+
+    return $product->get_image($size, [
+        'class' => 'attachment-woocommerce_thumbnail size-woocommerce_thumbnail',
+        'alt'   => $product->get_name(),
+    ]);
+}
+
+/**
+ * Muestra producto en resumen con miniatura y badge de cantidad.
+ */
+function craftrootsmp_checkout_cart_item_name($name, $cart_item, $cart_item_key) {
+    if (!is_checkout() || empty($cart_item['data']) || !is_a($cart_item['data'], 'WC_Product')) {
+        return $name;
+    }
+
+    $product = $cart_item['data'];
+    $quantity = isset($cart_item['quantity']) ? (int) $cart_item['quantity'] : 1;
+    $thumbnail = craftrootsmp_get_gallery_product_image($product);
+
+    if (!$thumbnail) {
+        return $name;
+    }
+
+    $product_name = wp_strip_all_tags($name);
+
+    return sprintf(
+        '<div class="cr-checkout-product"><div class="cr-checkout-product__thumb">%1$s<span class="cr-checkout-product__qty">%2$d</span></div><div class="cr-checkout-product__name">%3$s</div></div>',
+        $thumbnail,
+        $quantity,
+        esc_html($product_name)
+    );
+}
+add_filter('woocommerce_cart_item_name', 'craftrootsmp_checkout_cart_item_name', 25, 3);
+
+/**
+ * Oculta la cantidad inline (ya va en el badge).
+ */
+function craftrootsmp_checkout_hide_item_quantity($quantity_html, $cart_item, $cart_item_key) {
+    if (is_checkout()) {
+        return '';
+    }
+
+    return $quantity_html;
+}
+add_filter('woocommerce_checkout_cart_item_quantity', 'craftrootsmp_checkout_hide_item_quantity', 25, 3);
