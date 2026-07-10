@@ -7,7 +7,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('CRAFTROOTSMP_EMAIL_LOGO_URL', 'https://laforeste.com/wp-content/uploads/2026/03/logo-claro.svg');
+/**
+ * URL del logo para todos los correos WooCommerce.
+ */
+function craftrootsmp_get_email_logo_url() {
+    return get_stylesheet_directory_uri() . '/craftrootsmp/logo-email.svg';
+}
 
 /**
  * IDs de correos al cliente que usan el diseño La Foreste.
@@ -99,14 +104,10 @@ function craftrootsmp_email_footer_unflag() {
 add_action('woocommerce_email_footer', 'craftrootsmp_email_footer_unflag', 999);
 
 /**
- * Logo del sitio en el encabezado del correo.
+ * Logo del sitio en el encabezado de todos los correos.
  */
 function craftrootsmp_email_header_image($image) {
-    if (empty($GLOBALS['craftrootsmp_rendering_customer_email'])) {
-        return $image;
-    }
-
-    return CRAFTROOTSMP_EMAIL_LOGO_URL;
+    return craftrootsmp_get_email_logo_url();
 }
 add_filter('woocommerce_email_header_image', 'craftrootsmp_email_header_image');
 
