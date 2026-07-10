@@ -80,12 +80,18 @@
 
             const required = label.querySelector('.required');
             const optional = label.querySelector('.optional');
-            label.textContent = FIELD_LABELS[fieldId] + ' ';
+            const labelHasOptional = /\(opcional\)/i.test(FIELD_LABELS[fieldId]);
+
+            label.textContent = FIELD_LABELS[fieldId];
 
             if (required) {
+                label.appendChild(document.createTextNode(' '));
                 label.appendChild(required);
-            } else if (optional) {
+            } else if (optional && !labelHasOptional) {
+                label.appendChild(document.createTextNode(' '));
                 label.appendChild(optional);
+            } else if (optional && labelHasOptional) {
+                optional.remove();
             }
         });
 
@@ -96,7 +102,10 @@
 
         const notesField = root.querySelector('#order_comments');
         if (notesField) {
-            notesField.setAttribute('placeholder', '');
+            notesField.setAttribute(
+                'placeholder',
+                'Notas sobre tu pedido, por ejemplo alguna indicación para la entrega.'
+            );
         }
     }
 
@@ -141,14 +150,9 @@
     }
 
     function enforceTwoColumnLayout(root) {
-        const billingWrapper = root.querySelector('.woocommerce-billing-fields__field-wrapper');
-        if (!billingWrapper) {
-            return;
-        }
-
         Object.keys(TWO_COLUMN_FIELDS).forEach(function (fieldId) {
             setFieldColumn(
-                billingWrapper.querySelector('#' + fieldId + '_field'),
+                root.querySelector('#' + fieldId + '_field'),
                 TWO_COLUMN_FIELDS[fieldId]
             );
         });
@@ -158,9 +162,12 @@
             setFieldColumn(field, 'wide');
         });
 
-        const countryField = billingWrapper.querySelector('#billing_country_field');
+        const billingWrapper = root.querySelector('.woocommerce-billing-fields__field-wrapper');
+        const countryField = billingWrapper
+            ? billingWrapper.querySelector('#billing_country_field')
+            : root.querySelector('#billing_country_field');
         const hasIdField = ID_FIELD_SELECTORS.some(function (selector) {
-            return billingWrapper.querySelector(selector);
+            return root.querySelector(selector);
         });
 
         if (countryField) {
@@ -168,7 +175,7 @@
         }
 
         ID_FIELD_SELECTORS.forEach(function (selector) {
-            setFieldColumn(billingWrapper.querySelector(selector), 'first');
+            setFieldColumn(root.querySelector(selector), 'first');
         });
     }
 

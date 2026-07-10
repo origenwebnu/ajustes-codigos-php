@@ -230,21 +230,25 @@ function craftrootsmp_checkout_fields_layout($fields) {
     if (isset($billing['billing_postcode'])) {
         $billing['billing_postcode']['label'] = 'Código postal / Zip Code (opcional)';
         $billing['billing_postcode']['class'] = ['form-row-first', 'address-field'];
+        $billing['billing_postcode']['priority'] = 95;
     }
 
     if (isset($billing['billing_phone'])) {
         $billing['billing_phone']['label'] = 'Teléfono';
         $billing['billing_phone']['class'] = ['form-row-last'];
+        $billing['billing_phone']['priority'] = 100;
     }
 
     if (isset($billing['billing_email'])) {
         $billing['billing_email']['label'] = 'Correo electrónico';
         $billing['billing_email']['class'] = ['form-row-wide'];
+        $billing['billing_email']['priority'] = 110;
     }
 
     if (!empty($fields['order']['order_comments'])) {
         $fields['order']['order_comments']['label'] = 'Notas adicionales (opcional)';
-        $fields['order']['order_comments']['placeholder'] = '';
+        $fields['order']['order_comments']['class'] = ['form-row-wide', 'notes'];
+        $fields['order']['order_comments']['placeholder'] = 'Notas sobre tu pedido, por ejemplo alguna indicación para la entrega.';
     }
 
     return $fields;
