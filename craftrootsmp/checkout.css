@@ -168,18 +168,45 @@
 .ny-compraf .form-row {
     margin: 0 0 18px !important;
     padding: 0 !important;
-    width: 100%;
     float: none !important;
     clear: none !important;
+    box-sizing: border-box;
 }
 
-.ny-compraf .form-row-first,
-.ny-compraf .form-row-last {
+.ny-compraf .woocommerce-billing-fields__field-wrapper .form-row-first,
+.ny-compraf .woocommerce-billing-fields__field-wrapper .form-row-last,
+.ny-compraf .woocommerce-shipping-fields__field-wrapper .form-row-first,
+.ny-compraf .woocommerce-shipping-fields__field-wrapper .form-row-last {
     width: calc(50% - 10px) !important;
+    flex: 0 0 calc(50% - 10px) !important;
+    max-width: calc(50% - 10px) !important;
 }
 
-.ny-compraf .form-row-wide {
+.ny-compraf .woocommerce-billing-fields__field-wrapper .form-row-wide,
+.ny-compraf .woocommerce-shipping-fields__field-wrapper .form-row-wide,
+.ny-compraf .woocommerce-additional-fields__field-wrapper .form-row-wide {
     width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+}
+
+/* Anula reglas por defecto de WooCommerce que fuerzan ancho completo */
+body.woocommerce-checkout .ny-compraf .woocommerce form .form-row-first,
+.ny-compraf .woocommerce form .form-row-first {
+    width: calc(50% - 10px) !important;
+    float: none !important;
+}
+
+body.woocommerce-checkout .ny-compraf .woocommerce form .form-row-last,
+.ny-compraf .woocommerce form .form-row-last {
+    width: calc(50% - 10px) !important;
+    float: none !important;
+}
+
+body.woocommerce-checkout .ny-compraf .woocommerce form .form-row-wide,
+.ny-compraf .woocommerce form .form-row-wide {
+    width: 100% !important;
+    float: none !important;
 }
 
 .ny-compraf .form-row label {
@@ -373,16 +400,26 @@
     text-align: right !important;
 }
 
-.ny-compraf .woocommerce-checkout-review-order-table tr.woocommerce-shipping-totals ul,
 .ny-compraf .woocommerce-checkout-review-order-table tr.woocommerce-shipping-totals input {
     display: none !important;
 }
 
+.ny-compraf .woocommerce-checkout-review-order-table tr.woocommerce-shipping-totals ul {
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
 .ny-compraf .woocommerce-checkout-review-order-table tr.woocommerce-shipping-totals td .cr-shipping-free {
-    display: block;
+    display: inline-block !important;
+    visibility: visible !important;
     text-align: right;
     font-size: 0.95rem;
     color: var(--cr-black);
+}
+
+.ny-compraf .woocommerce-checkout-review-order-table tr.woocommerce-shipping-totals td:has(.cr-shipping-free) ul {
+    display: none !important;
 }
 
 .ny-compraf .woocommerce-checkout-review-order-table tr.fee,

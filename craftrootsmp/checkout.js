@@ -99,28 +99,75 @@
         }
     }
 
-    function adjustFieldLayout(root) {
-        const countryField = root.querySelector('#billing_country_field');
-        if (!countryField) {
+    const TWO_COLUMN_FIELDS = {
+        billing_first_name: 'first',
+        billing_last_name: 'last',
+        billing_city: 'first',
+        billing_state: 'last',
+        billing_postcode: 'first',
+        billing_phone: 'last'
+    };
+
+    const FULL_WIDTH_FIELDS = [
+        'billing_address_1',
+        'billing_address_2',
+        'billing_email',
+        'order_comments'
+    ];
+
+    const ID_FIELD_SELECTORS = [
+        '#billing_document_field',
+        '#billing_cedula_field',
+        '#billing_identification_field',
+        '#billing_id_number_field',
+        '#billing_nit_field'
+    ];
+
+    function setFieldColumn(field, column) {
+        if (!field) {
             return;
         }
 
-        const idFieldSelectors = [
-            '#billing_document_field',
-            '#billing_cedula_field',
-            '#billing_identification_field',
-            '#billing_id_number_field',
-            '#billing_nit_field'
-        ];
+        field.classList.remove('form-row-first', 'form-row-last', 'form-row-wide');
 
-        const hasIdField = idFieldSelectors.some(function (selector) {
-            return root.querySelector(selector);
+        if (column === 'wide') {
+            field.classList.add('form-row-wide');
+            return;
+        }
+
+        field.classList.add(column === 'first' ? 'form-row-first' : 'form-row-last');
+    }
+
+    function enforceTwoColumnLayout(root) {
+        const billingWrapper = root.querySelector('.woocommerce-billing-fields__field-wrapper');
+        if (!billingWrapper) {
+            return;
+        }
+
+        Object.keys(TWO_COLUMN_FIELDS).forEach(function (fieldId) {
+            setFieldColumn(
+                billingWrapper.querySelector('#' + fieldId + '_field'),
+                TWO_COLUMN_FIELDS[fieldId]
+            );
         });
 
-        if (!hasIdField) {
-            countryField.classList.remove('form-row-wide', 'form-row-last');
-            countryField.classList.add('form-row-first');
+        FULL_WIDTH_FIELDS.forEach(function (fieldId) {
+            const field = root.querySelector('#' + fieldId + '_field');
+            setFieldColumn(field, 'wide');
+        });
+
+        const countryField = billingWrapper.querySelector('#billing_country_field');
+        const hasIdField = ID_FIELD_SELECTORS.some(function (selector) {
+            return billingWrapper.querySelector(selector);
+        });
+
+        if (countryField) {
+            setFieldColumn(countryField, hasIdField ? 'last' : 'first');
         }
+
+        ID_FIELD_SELECTORS.forEach(function (selector) {
+            setFieldColumn(billingWrapper.querySelector(selector), 'first');
+        });
     }
 
     function updateSubtotalLabel(root) {
@@ -140,14 +187,22 @@
 
     function simplifyShippingDisplay(root) {
         const shippingCell = root.querySelector('.woocommerce-checkout-review-order-table tr.woocommerce-shipping-totals td');
-        if (!shippingCell || shippingCell.querySelector('.cr-shipping-free')) {
+        if (!shippingCell) {
+            return;
+        }
+
+        const existing = shippingCell.querySelector('.cr-shipping-free');
+        if (existing) {
+            existing.textContent = 'Gratis';
             return;
         }
 
         const label = shippingCell.querySelector('label');
-        const isFree = label && /gratis|gratuito|free/i.test(label.textContent);
+        const labelText = label ? label.textContent.trim() : '';
+        const isFree = !labelText || /gratis|gratuito|free/i.test(labelText);
+        const shippingText = isFree ? 'Gratis' : labelText;
 
-        shippingCell.innerHTML = '<span class="cr-shipping-free">' + (isFree ? 'Gratis' : (label ? label.textContent.trim() : 'Gratis')) + '</span>';
+        shippingCell.innerHTML = '<span class="cr-shipping-free">' + shippingText + '</span>';
     }
 
     function updatePlaceOrderButton(root) {
@@ -169,7 +224,7 @@
         buildCheckoutHeader(root);
         moveLeftColumnSections(root);
         updateFieldLabels(root);
-        adjustFieldLayout(root);
+        enforceTwoColumnLayout(root);
         updateSubtotalLabel(root);
         simplifyShippingDisplay(root);
         updatePlaceOrderButton(root);

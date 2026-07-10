@@ -133,7 +133,93 @@ function craftrootsmp_checkout_fields_layout($fields) {
 
     return $fields;
 }
-add_filter('woocommerce_checkout_fields', 'craftrootsmp_checkout_fields_layout', 20);
+add_filter('woocommerce_checkout_fields', 'craftrootsmp_checkout_fields_layout', 999);
+
+/**
+ * Fuerza columnas en campos de dirección (el locale de CO los pone full-width).
+ */
+function craftrootsmp_checkout_default_address_fields($fields) {
+    if (is_admin() && !wp_doing_ajax()) {
+        return $fields;
+    }
+
+    if (isset($fields['city'])) {
+        $fields['city']['class'] = ['form-row-first', 'address-field'];
+    }
+
+    if (isset($fields['state'])) {
+        $fields['state']['class'] = ['form-row-last', 'address-field'];
+    }
+
+    if (isset($fields['postcode'])) {
+        $fields['postcode']['class'] = ['form-row-first', 'address-field'];
+    }
+
+    if (isset($fields['country'])) {
+        $fields['country']['class'] = ['form-row-last', 'address-field', 'update_totals_on_change'];
+    }
+
+    return $fields;
+}
+add_filter('woocommerce_default_address_fields', 'craftrootsmp_checkout_default_address_fields', 999);
+
+/**
+ * Locale Colombia: dos columnas en ciudad/departamento/código postal.
+ */
+function craftrootsmp_checkout_country_locale($locale) {
+    if (!isset($locale['CO'])) {
+        return $locale;
+    }
+
+    if (isset($locale['CO']['city'])) {
+        $locale['CO']['city']['class'] = ['form-row-first', 'address-field'];
+    }
+
+    if (isset($locale['CO']['state'])) {
+        $locale['CO']['state']['class'] = ['form-row-last', 'address-field'];
+    }
+
+    if (isset($locale['CO']['postcode'])) {
+        $locale['CO']['postcode']['class'] = ['form-row-first', 'address-field'];
+    }
+
+    if (isset($locale['CO']['country'])) {
+        $locale['CO']['country']['class'] = ['form-row-last', 'address-field', 'update_totals_on_change'];
+    }
+
+    return $locale;
+}
+add_filter('woocommerce_get_country_locale', 'craftrootsmp_checkout_country_locale', 999);
+
+/**
+ * Muestra "Gratis" en la fila de envío del checkout.
+ */
+function craftrootsmp_checkout_shipping_totals_html($html) {
+    if (!is_checkout()) {
+        return $html;
+    }
+
+    $is_free = false;
+
+    if (WC()->cart && WC()->cart->get_shipping_total() <= 0) {
+        $is_free = true;
+    }
+
+    if (
+        stripos($html, 'gratuito') !== false
+        || stripos($html, 'gratis') !== false
+        || stripos($html, 'free') !== false
+    ) {
+        $is_free = true;
+    }
+
+    if ($is_free) {
+        return '<span class="cr-shipping-free">Gratis</span>';
+    }
+
+    return $html;
+}
+add_filter('woocommerce_cart_totals_shipping_html', 'craftrootsmp_checkout_shipping_totals_html', 999);
 
 /**
  * Obtiene miniatura del producto usando la primera imagen de galería.
