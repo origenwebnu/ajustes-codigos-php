@@ -635,7 +635,9 @@ body.woocommerce-checkout .ny-compraf #billing_phone_field {
     .ny-compraf .woocommerce-shipping-fields__field-wrapper .form-row-first,
     .ny-compraf .woocommerce-shipping-fields__field-wrapper .form-row-last,
     body.woocommerce-checkout .ny-compraf .woocommerce form .form-row-first,
-    body.woocommerce-checkout .ny-compraf .woocommerce form .form-row-last {
+    body.woocommerce-checkout .ny-compraf .woocommerce form .form-row-last,
+    body.woocommerce-checkout .ny-compraf #billing_postcode_field,
+    body.woocommerce-checkout .ny-compraf #billing_phone_field {
         width: 100% !important;
         flex: 0 0 100% !important;
         max-width: 100% !important;
