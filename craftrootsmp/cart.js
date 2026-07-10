@@ -11,6 +11,17 @@
         return '/shop/';
     }
 
+    function removeEmptyTableColumns(container) {
+        const removeHeader = container.querySelector('thead th.product-remove');
+        if (removeHeader) {
+            removeHeader.remove();
+        }
+
+        container.querySelectorAll('td.product-remove').forEach(function (cell) {
+            cell.remove();
+        });
+    }
+
     function setSpanishTableHeaders(container) {
         const labels = {
             'product-name': 'Producto',
@@ -209,17 +220,22 @@
             checkoutButton.insertAdjacentElement('afterend', continueLink);
         }
 
-        if (updateButton && form && !cartTotals.querySelector('.cr-update-cart')) {
+        if (updateButton && form && !cartTotals.querySelector('.cr-update-cart-wrap')) {
             updateButton.classList.add('cr-update-cart');
+            updateButton.classList.remove('button', 'alt');
             updateButton.textContent = 'Actualizar carrito';
-            updateButton.style.display = 'block';
+            updateButton.style.display = 'inline-block';
             linkFieldsToCartForm(form, updateButton);
+
+            const wrap = document.createElement('div');
+            wrap.className = 'cr-update-cart-wrap';
+            wrap.appendChild(updateButton);
 
             const proceedBox = cartTotals.querySelector('.wc-proceed-to-checkout');
             if (proceedBox) {
-                proceedBox.appendChild(updateButton);
+                proceedBox.insertAdjacentElement('afterend', wrap);
             } else {
-                cartTotals.appendChild(updateButton);
+                cartTotals.appendChild(wrap);
             }
         }
     }
@@ -247,6 +263,7 @@
         buildCartHeader(container, itemCount, shopUrl);
         setSpanishTableHeaders(container);
         moveRemoveIntoProductName(container);
+        removeEmptyTableColumns(container);
 
         container.querySelectorAll('.quantity input.qty').forEach(initQuantityStepper);
 
