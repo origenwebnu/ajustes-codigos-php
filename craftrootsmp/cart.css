@@ -673,7 +673,7 @@
     .ny-carrito form.woocommerce-cart-form,
     .ny-carrito .cart-collaterals {
         width: 100% !important;
-        flex: none;
+        flex: none !important;
         max-width: 100% !important;
     }
 
@@ -681,54 +681,136 @@
         flex-direction: column;
         align-items: flex-start;
     }
-}
 
-@media (max-width: 768px) {
-    .ny-carrito table.shop_table_responsive thead {
-        display: none;
+    /* Tabla: ocultar encabezados */
+    .ny-carrito table.cart thead {
+        display: none !important;
     }
 
-    .ny-carrito table.shop_table_responsive tr.cart_item {
+    .ny-carrito table.cart,
+    .ny-carrito table.cart tbody {
         display: block;
-        padding: 16px 0;
-        border-bottom: 1px solid var(--cr-border);
+        width: 100% !important;
     }
 
-    .ny-carrito table.shop_table_responsive tr.cart_item td {
+    /* Item vertical: imagen → nombre → precio → cantidad → subtotal */
+    .ny-carrito table.cart tr.cart_item {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        position: relative;
+        width: 100% !important;
+        padding: 20px 44px 24px 0 !important;
+        margin: 0 0 8px;
+        border-bottom: 1px solid var(--cr-border) !important;
+        box-sizing: border-box;
+    }
+
+    .ny-carrito table.cart tr.cart_item td {
         display: block;
-        text-align: left !important;
-        padding: 8px 0 !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 0 12px !important;
         border: none !important;
-    }
-
-    .ny-carrito table.shop_table_responsive tr.cart_item td::before {
-        content: attr(data-title);
-        display: block;
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: var(--cr-muted);
-        margin-bottom: 4px;
-    }
-
-    .ny-carrito table.shop_table_responsive td.product-thumbnail {
         text-align: left !important;
     }
 
-    .ny-carrito table.shop_table_responsive td.product-thumbnail::before {
-        display: none;
+    .ny-carrito table.cart tr.cart_item td::before {
+        display: none !important;
+        content: none !important;
     }
 
-    .ny-carrito table.shop_table_responsive td.product-name {
+    .ny-carrito table.cart tr.cart_item td.product-thumbnail {
+        order: 1;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 14px !important;
+    }
+
+    .ny-carrito table.cart tr.cart_item td.product-thumbnail img {
+        width: auto !important;
+        max-width: 120px !important;
+        height: auto !important;
+    }
+
+    .ny-carrito table.cart tr.cart_item td.product-name {
+        order: 2;
+        position: static !important;
+        padding-right: 0 !important;
+        margin-bottom: 10px !important;
+    }
+
+    .ny-carrito table.cart tr.cart_item td.product-name a:not(.remove) {
+        font-size: 1rem !important;
+        line-height: 1.45 !important;
         padding-right: 0 !important;
     }
 
+    .ny-carrito table.cart tr.cart_item td.product-price {
+        order: 3;
+        font-size: 1.35rem !important;
+        font-weight: 500 !important;
+        line-height: 1.2 !important;
+        margin-bottom: 14px !important;
+        padding: 0 !important;
+    }
+
+    .ny-carrito table.cart tr.cart_item td.product-quantity {
+        order: 4;
+        margin-bottom: 14px !important;
+        padding: 0 !important;
+        text-align: left !important;
+    }
+
+    .ny-carrito table.cart tr.cart_item td.product-subtotal {
+        order: 5;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Icono eliminar arriba a la derecha del item */
+    .ny-carrito table.cart tr.cart_item a.remove,
+    .ny-carrito table.cart tr.cart_item a.remove.cr-remove-item {
+        position: absolute !important;
+        top: 16px !important;
+        right: 0 !important;
+        left: auto !important;
+        transform: none !important;
+        margin: 0 !important;
+        z-index: 2;
+    }
+
+    /* Cupón: altura visible en móvil */
     .ny-carrito .cr-cart-coupon .coupon {
         flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .ny-carrito .cr-cart-coupon #coupon_code {
+        width: 100% !important;
+        min-width: 100% !important;
+        min-height: 48px !important;
+        height: 48px !important;
+        padding: 0 18px !important;
+        line-height: 48px !important;
+        font-size: 0.95rem !important;
+        box-sizing: border-box !important;
+        display: block !important;
     }
 
     .ny-carrito .cr-cart-coupon [name="apply_coupon"] {
-        width: 100%;
+        width: 100% !important;
+        min-height: 48px !important;
+        height: 48px !important;
+    }
+
+    /* Seguir comprando: mitad del tamaño de letra */
+    .ny-carrito .cr-continue-shopping {
+        font-size: 0.44rem !important;
+        padding: 12px 18px !important;
+        letter-spacing: 0.03em;
     }
 }
