@@ -93,7 +93,7 @@
 }
 
 .ny-carrito form.woocommerce-cart-form {
-    flex: 6 1 0;
+    flex: 13 1 0;
     min-width: 0;
     width: auto;
     max-width: none;
@@ -101,7 +101,7 @@
 }
 
 .ny-carrito .cart-collaterals {
-    flex: 4 0 0;
+    flex: 7 0 0;
     width: auto;
     max-width: none;
     background: var(--cr-sidebar-bg);
@@ -594,10 +594,18 @@
     text-align: center;
 }
 
+.ny-carrito button.cr-update-cart-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+}
+
 .ny-carrito .cr-update-cart,
-.ny-carrito button.cr-update-cart,
-.ny-carrito .cr-update-cart.button,
-.ny-carrito .wc-proceed-to-checkout .cr-update-cart {
+.ny-carrito button.cr-update-cart {
     appearance: none !important;
     -webkit-appearance: none !important;
     display: inline-block !important;

@@ -214,10 +214,53 @@
         subtotalRow.insertAdjacentElement('afterend', row);
     }
 
+    function enableCartUpdateButton(form) {
+        const hiddenUpdate = form && form.querySelector('button[name="update_cart"]');
+        if (!hiddenUpdate) {
+            return;
+        }
+
+        hiddenUpdate.disabled = false;
+        hiddenUpdate.removeAttribute('aria-disabled');
+    }
+
+    function bindQuantityUpdateListeners(container, form, visibleUpdate) {
+        if (!form) {
+            return;
+        }
+
+        const syncState = function () {
+            const hiddenUpdate = form.querySelector('button[name="update_cart"]');
+            if (!hiddenUpdate || !visibleUpdate) {
+                return;
+            }
+
+            visibleUpdate.disabled = hiddenUpdate.disabled;
+            if (hiddenUpdate.disabled) {
+                visibleUpdate.setAttribute('aria-disabled', 'true');
+            } else {
+                visibleUpdate.removeAttribute('aria-disabled');
+            }
+        };
+
+        container.querySelectorAll('.woocommerce-cart-form .qty').forEach(function (qty) {
+            qty.addEventListener('change', function () {
+                enableCartUpdateButton(form);
+                syncState();
+            });
+            qty.addEventListener('input', function () {
+                enableCartUpdateButton(form);
+                syncState();
+            });
+        });
+
+        syncState();
+    }
+
     function setupSidebarActions(container, cartTotals) {
         const form = container.querySelector('form.woocommerce-cart-form');
         const checkoutButton = cartTotals.querySelector('.checkout-button');
-        const updateButton = container.querySelector('[name="update_cart"]');
+        let hiddenUpdate = form ? form.querySelector('button[name="update_cart"]') : null;
 
         if (checkoutButton) {
             checkoutButton.textContent = 'Finalizar compra';
@@ -236,16 +279,41 @@
             checkoutButton.insertAdjacentElement('afterend', continueLink);
         }
 
-        if (updateButton && form && !cartTotals.querySelector('.cr-update-cart-wrap')) {
-            updateButton.classList.add('cr-update-cart');
-            updateButton.classList.remove('button', 'alt');
-            updateButton.textContent = 'Actualizar carrito';
-            updateButton.style.display = 'inline-block';
-            linkFieldsToCartForm(form, updateButton);
+        if (form && !cartTotals.querySelector('.cr-update-cart-wrap')) {
+            if (hiddenUpdate && !form.contains(hiddenUpdate)) {
+                form.appendChild(hiddenUpdate);
+            }
+
+            if (!hiddenUpdate) {
+                hiddenUpdate = document.createElement('button');
+                hiddenUpdate.type = 'submit';
+                hiddenUpdate.name = 'update_cart';
+                hiddenUpdate.value = '1';
+                hiddenUpdate.className = 'button cr-update-cart-hidden';
+                form.appendChild(hiddenUpdate);
+            }
+
+            hiddenUpdate.classList.add('cr-update-cart-hidden', 'button');
+            hiddenUpdate.type = 'submit';
+            hiddenUpdate.name = 'update_cart';
+            hiddenUpdate.value = hiddenUpdate.value || '1';
+            hiddenUpdate.style.display = 'none';
+            hiddenUpdate.setAttribute('aria-hidden', 'true');
+
+            const visibleUpdate = document.createElement('button');
+            visibleUpdate.type = 'button';
+            visibleUpdate.className = 'cr-update-cart';
+            visibleUpdate.textContent = 'Actualizar carrito';
+
+            visibleUpdate.addEventListener('click', function (event) {
+                event.preventDefault();
+                enableCartUpdateButton(form);
+                hiddenUpdate.click();
+            });
 
             const wrap = document.createElement('div');
             wrap.className = 'cr-update-cart-wrap';
-            wrap.appendChild(updateButton);
+            wrap.appendChild(visibleUpdate);
 
             const proceedBox = cartTotals.querySelector('.wc-proceed-to-checkout');
             if (proceedBox) {
@@ -253,6 +321,8 @@
             } else {
                 cartTotals.appendChild(wrap);
             }
+
+            bindQuantityUpdateListeners(container, form, visibleUpdate);
         }
     }
 
@@ -293,5 +363,11 @@
     }
 
     document.addEventListener('DOMContentLoaded', initCraftRootsCart);
-    document.addEventListener('updated_wc_div', initCraftRootsCart);
+    document.addEventListener('updated_wc_div', function () {
+        const container = document.querySelector('.ny-carrito .woocommerce');
+        if (container) {
+            container.classList.remove('cr-cart-ready');
+        }
+        initCraftRootsCart();
+    });
 })();
