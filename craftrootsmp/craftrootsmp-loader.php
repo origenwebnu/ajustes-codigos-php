@@ -23,3 +23,7 @@ if (file_exists($craftrootsmp_dir . '/craftrootsmp-checkout-hooks.php')) {
 if (file_exists($craftrootsmp_dir . '/craftrootsmp-stripe-hooks.php')) {
     require $craftrootsmp_dir . '/craftrootsmp-stripe-hooks.php';
 }
+
+if (file_exists($craftrootsmp_dir . '/craftrootsmp-email-hooks.php')) {
+    require $craftrootsmp_dir . '/craftrootsmp-email-hooks.php';
+}
