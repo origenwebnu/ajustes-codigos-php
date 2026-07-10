@@ -686,7 +686,7 @@ body.woocommerce-order-received .ny-compraf .cr-thankyou-banner::before {
 /* Resumen rápido: número, fecha, total, pago */
 body.woocommerce-order-received .ny-compraf .woocommerce-order-overview {
     display: flex !important;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     margin: 0 0 28px !important;
     padding: 0 !important;
     list-style: none !important;
@@ -694,6 +694,10 @@ body.woocommerce-order-received .ny-compraf .woocommerce-order-overview {
     border: 1px solid var(--cr-input-border);
     border-radius: 14px;
     overflow: hidden;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-order-overview.cr-overview-ready {
+    flex-wrap: nowrap !important;
 }
 
 body.woocommerce-order-received .ny-compraf .woocommerce-order-overview li {
@@ -707,6 +711,11 @@ body.woocommerce-order-received .ny-compraf .woocommerce-order-overview li {
     line-height: 1.45;
     color: var(--cr-black);
     text-transform: none;
+}
+
+body.woocommerce-order-received .ny-compraf .woocommerce-order-overview li.woocommerce-order-overview__email,
+body.woocommerce-order-received .ny-compraf .woocommerce-order-overview.cr-overview-ready li.woocommerce-order-overview__email {
+    display: none !important;
 }
 
 body.woocommerce-order-received .ny-compraf .woocommerce-order-overview li:last-child {

@@ -291,6 +291,12 @@
         if (item.classList.contains('woocommerce-order-overview__payment-method')) {
             return 'payment';
         }
+        if (item.classList.contains('payment-method') || item.classList.contains('method')) {
+            const label = item.querySelector('strong');
+            if (label && /m[eé]todo de pago/i.test(label.textContent)) {
+                return 'payment';
+            }
+        }
         if (item.classList.contains('woocommerce-order-overview__email')) {
             return 'email';
         }
