@@ -255,110 +255,178 @@
         orderWrap.parentNode.insertBefore(header, orderWrap);
     }
 
-    function updateOrderOverviewLabels(root) {
-        const labelMap = {
-            order: 'Número de pedido:',
-            date: 'Fecha:',
-            total: 'Total:',
-            email: 'Correo electrónico:',
-            'payment-method': 'Método de pago:'
-        };
+    const THANKYOU_MESSAGE = 'Gracias. Tu pedido ha sido recibido. Tu orden se está procesando.';
+    const OVERVIEW_ORDER = [
+        'woocommerce-order-overview__order',
+        'woocommerce-order-overview__date',
+        'woocommerce-order-overview__total',
+        'woocommerce-order-overview__payment-method'
+    ];
+    const OVERVIEW_LABELS = {
+        'woocommerce-order-overview__order': 'Número de pedido',
+        'woocommerce-order-overview__date': 'Fecha',
+        'woocommerce-order-overview__total': 'Total',
+        'woocommerce-order-overview__payment-method': 'Método de pago'
+    };
 
-        root.querySelectorAll('.woocommerce-order-overview li').forEach(function (item) {
-            const strong = item.querySelector('strong');
-            if (!strong) {
+    function normalizeThankYouNotice(root) {
+        const notices = root.querySelectorAll(
+            '.woocommerce-thankyou-order-received, .woocommerce-notice--success'
+        );
+
+        notices.forEach(function (notice, index) {
+            if (index > 0) {
+                notice.remove();
                 return;
             }
 
-            Object.keys(labelMap).forEach(function (key) {
-                if (item.classList.contains(key) || item.classList.contains('woocommerce-order-overview__' + key)) {
-                    strong.textContent = labelMap[key];
-                }
-            });
+            notice.className = 'cr-thankyou-banner';
+            notice.removeAttribute('role');
+            notice.textContent = THANKYOU_MESSAGE;
         });
+
+        if (!root.querySelector('.cr-thankyou-banner')) {
+            const orderWrap = root.querySelector('.woocommerce-order');
+            if (!orderWrap) {
+                return;
+            }
+
+            const banner = document.createElement('p');
+            banner.className = 'cr-thankyou-banner';
+            banner.textContent = THANKYOU_MESSAGE;
+            orderWrap.insertBefore(banner, orderWrap.firstChild);
+        }
     }
 
-    function formatOrderOverviewDate(root) {
-        const dateItem = root.querySelector('.woocommerce-order-overview__date');
-        if (!dateItem) {
+    function getOverviewItemKey(item) {
+        return OVERVIEW_ORDER.find(function (key) {
+            return item.classList.contains(key);
+        }) || '';
+    }
+
+    function getOverviewItemValue(item) {
+        const clone = item.cloneNode(true);
+        const strong = clone.querySelector('strong');
+        if (strong) {
+            strong.remove();
+        }
+        return clone.textContent.replace(/\s+/g, ' ').trim();
+    }
+
+    function restructureOrderOverview(root) {
+        const list = root.querySelector('.woocommerce-order-overview');
+        if (!list || list.classList.contains('cr-overview-ready')) {
             return;
         }
 
-        const strong = dateItem.querySelector('strong');
-        if (!strong) {
-            return;
-        }
-
-        const raw = dateItem.textContent.replace(strong.textContent, '').trim();
-        const parsed = new Date(raw);
-
-        if (isNaN(parsed.getTime())) {
-            return;
-        }
-
-        const day = String(parsed.getDate()).padStart(2, '0');
-        const month = String(parsed.getMonth() + 1).padStart(2, '0');
-        const year = parsed.getFullYear();
-        const formatted = day + ' / ' + month + ' / ' + year;
-
-        Array.from(dateItem.childNodes).forEach(function (node) {
-            if (node.nodeType === Node.TEXT_NODE) {
-                node.textContent = '';
+        const itemsByKey = {};
+        list.querySelectorAll('li').forEach(function (item) {
+            const key = getOverviewItemKey(item);
+            if (key) {
+                itemsByKey[key] = item;
+            } else {
+                item.remove();
             }
         });
 
-        dateItem.appendChild(document.createTextNode(' ' + formatted));
+        list.innerHTML = '';
+
+        OVERVIEW_ORDER.forEach(function (key) {
+            const item = itemsByKey[key];
+            if (!item) {
+                return;
+            }
+
+            const value = getOverviewItemValue(item);
+            item.innerHTML =
+                '<span class="cr-overview-label">' + OVERVIEW_LABELS[key] + '</span>' +
+                '<span class="cr-overview-value">' + value + '</span>';
+
+            if (key === 'woocommerce-order-overview__date') {
+                const parsed = new Date(value);
+                if (!isNaN(parsed.getTime())) {
+                    const day = String(parsed.getDate()).padStart(2, '0');
+                    const month = String(parsed.getMonth() + 1).padStart(2, '0');
+                    const year = parsed.getFullYear();
+                    item.querySelector('.cr-overview-value').textContent =
+                        day + ' / ' + month + ' / ' + year;
+                }
+            }
+
+            list.appendChild(item);
+        });
+
+        list.classList.add('cr-overview-ready');
     }
 
-    function addOrderDetailsQuantityColumn(root) {
-        const table = root.querySelector('.woocommerce-table--order-details');
-        if (!table || table.classList.contains('cr-order-qty-ready')) {
+    function moveOrderDetailsTitleOutside(root) {
+        const section = root.querySelector('.woocommerce-order-details');
+        const title = section && section.querySelector('.woocommerce-order-details__title');
+
+        if (!section || !title || title.classList.contains('cr-order-details-title')) {
             return;
         }
 
-        const headRow = table.querySelector('thead tr');
-        const totalTh = headRow && headRow.querySelector('th.product-total');
+        title.classList.add('cr-order-details-title');
+        title.textContent = 'Detalles del pedido:';
+        section.parentNode.insertBefore(title, section);
+    }
 
-        if (headRow && totalTh && !headRow.querySelector('th.cr-qty-header')) {
-            const qtyTh = document.createElement('th');
-            qtyTh.className = 'product-quantity cr-qty-header';
-            qtyTh.textContent = 'Cantidad';
-            headRow.insertBefore(qtyTh, totalTh);
+    function fixOrderDetailsTable(root) {
+        const table = root.querySelector('.woocommerce-table--order-details');
+        if (!table || table.classList.contains('cr-order-table-ready')) {
+            return;
         }
+
+        let headRow = table.querySelector('thead tr');
+        if (!headRow) {
+            const thead = document.createElement('thead');
+            headRow = document.createElement('tr');
+            thead.appendChild(headRow);
+            table.insertBefore(thead, table.firstChild);
+        }
+
+        headRow.innerHTML =
+            '<th class="product-name">Producto</th>' +
+            '<th class="product-quantity">Cantidad</th>' +
+            '<th class="product-total">Total</th>';
 
         table.querySelectorAll('tbody tr').forEach(function (row) {
-            if (row.querySelector('td.product-quantity')) {
-                return;
-            }
-
             const nameCell = row.querySelector('td.product-name');
             const totalCell = row.querySelector('td.product-total');
             if (!nameCell || !totalCell) {
                 return;
             }
 
+            let qtyCell = row.querySelector('td.product-quantity');
+            const qtyHolder = nameCell.querySelector('.cr-order-item-qty');
             const qtyMatch = nameCell.textContent.match(/×\s*(\d+)/);
-            const qty = qtyMatch ? qtyMatch[1] : '1';
+            const qty = qtyHolder
+                ? qtyHolder.getAttribute('data-qty')
+                : (qtyMatch ? qtyMatch[1] : '1');
             const qtyEl = nameCell.querySelector('.product-quantity');
+
+            if (qtyHolder) {
+                qtyHolder.remove();
+            }
+
             if (qtyEl) {
                 qtyEl.remove();
             }
 
-            const qtyCell = document.createElement('td');
-            qtyCell.className = 'product-quantity';
-            qtyCell.setAttribute('data-title', 'Cantidad');
+            if (!qtyCell) {
+                qtyCell = document.createElement('td');
+                qtyCell.className = 'product-quantity';
+            }
+
             qtyCell.textContent = qty;
-            row.insertBefore(qtyCell, totalCell);
+            row.innerHTML = '';
+            row.appendChild(nameCell);
+            row.appendChild(qtyCell);
+            row.appendChild(totalCell);
         });
 
-        table.classList.add('cr-order-qty-ready');
-    }
-
-    function updateOrderDetailsTitle(root) {
-        const title = root.querySelector('.woocommerce-order-details__title');
-        if (title) {
-            title.textContent = 'Detalles del pedido:';
-        }
+        table.classList.add('cr-order-table-ready');
     }
 
     function initCraftRootsOrderReceived() {
@@ -370,10 +438,10 @@
         }
 
         buildOrderReceivedHeader(root, orderWrap);
-        updateOrderOverviewLabels(root);
-        formatOrderOverviewDate(root);
-        updateOrderDetailsTitle(root);
-        addOrderDetailsQuantityColumn(root);
+        normalizeThankYouNotice(root);
+        restructureOrderOverview(root);
+        moveOrderDetailsTitleOutside(root);
+        fixOrderDetailsTable(root);
 
         root.classList.add('cr-order-received-ready');
     }

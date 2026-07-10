@@ -429,7 +429,7 @@ add_filter('woocommerce_checkout_cart_item_quantity', 'craftrootsmp_checkout_hid
 function craftrootsmp_thankyou_order_received_text($text, $order) {
     return 'Gracias. Tu pedido ha sido recibido. Tu orden se está procesando.';
 }
-add_filter('woocommerce_thankyou_order_received_text', 'craftrootsmp_thankyou_order_received_text', 10, 2);
+add_filter('woocommerce_thankyou_order_received_text', 'craftrootsmp_thankyou_order_received_text', 99999, 2);
 
 /**
  * Ajusta totales del resumen en la página de pedido recibido.
@@ -479,31 +479,17 @@ function craftrootsmp_order_received_item_name($item_name, $item, $is_visible) {
     $plain_name = wp_strip_all_tags($item_name);
     $plain_name = preg_replace('/\s*×\s*\d+\s*$/', '', $plain_name);
 
+    $quantity = (int) $item->get_quantity();
+
     if (!$thumbnail) {
-        return esc_html($plain_name);
+        return '<span class="cr-order-item-qty" data-qty="' . esc_attr($quantity) . '"></span>' . esc_html($plain_name);
     }
 
     return sprintf(
-        '<div class="cr-checkout-product"><div class="cr-checkout-product__thumb">%1$s</div><div class="cr-checkout-product__name">%2$s</div></div>',
+        '<span class="cr-order-item-qty" data-qty="%1$d"></span><div class="cr-checkout-product"><div class="cr-checkout-product__thumb">%2$s</div><div class="cr-checkout-product__name">%3$s</div></div>',
+        $quantity,
         $thumbnail,
         esc_html($plain_name)
     );
 }
 add_filter('woocommerce_order_item_name', 'craftrootsmp_order_received_item_name', 25, 3);
-
-/**
- * Muestra identificación en la dirección de facturación del pedido recibido.
- */
-function craftrootsmp_order_received_billing_identification($address_type, $order) {
-    if ($address_type !== 'billing' || !$order) {
-        return;
-    }
-
-    $value = craftrootsmp_get_order_identification($order);
-    if ($value === '') {
-        return;
-    }
-
-    echo '<p class="cr-order-identification"><strong>' . esc_html__('Número de Identificación:', 'craftrootsmp') . '</strong> ' . esc_html($value) . '</p>';
-}
-add_action('woocommerce_order_details_after_customer_address', 'craftrootsmp_order_received_billing_identification', 10, 2);
