@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    const SHIPPING_NOTE = 'Envío gratis a todo Colombia en compras elegibles. Los tiempos de entrega se calculan según tu ciudad al finalizar la compra.';
+    const SHIPPING_NOTE = 'Envío Gratis a todo Colombia.<br>Envios internacionales comunicarse vía whatsapp para cotizar el valor del envio.<br>Nuestros envios tardan entre 5 y 8 días hábiles.';
     const CONTINUE_SHOPPING_URL = 'https://laforeste.com/los-guardianes/';
     const REMOVE_ICON_URL = 'https://laforeste.com/wp-content/themes/hello-elementor/craftrootsmp/borrar.svg';
 
