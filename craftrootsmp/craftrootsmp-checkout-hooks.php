@@ -10,6 +10,128 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+define('CRAFTROOTSMP_ID_FIELD_KEY', 'billing_identification');
+define('CRAFTROOTSMP_ID_META_KEY', '_billing_identification');
+
+/**
+ * Claves de campos de identificación que pueden existir por otros plugins.
+ */
+function craftrootsmp_get_identification_field_keys() {
+    return [
+        'billing_document',
+        'billing_cedula',
+        'billing_identification',
+        'billing_id_number',
+        'billing_nit',
+    ];
+}
+
+/**
+ * Agrega el campo "Número de identificación" al checkout.
+ */
+function craftrootsmp_add_identification_checkout_field($fields) {
+    if (empty($fields['billing'])) {
+        return $fields;
+    }
+
+    foreach (craftrootsmp_get_identification_field_keys() as $key) {
+        if (!empty($fields['billing'][$key])) {
+            return $fields;
+        }
+    }
+
+    $fields['billing'][CRAFTROOTSMP_ID_FIELD_KEY] = [
+        'type'         => 'text',
+        'label'        => 'Número de Identificación',
+        'required'     => true,
+        'class'        => ['form-row-first'],
+        'priority'     => 30,
+        'autocomplete' => 'off',
+    ];
+
+    return $fields;
+}
+add_filter('woocommerce_checkout_fields', 'craftrootsmp_add_identification_checkout_field', 10);
+
+/**
+ * Guarda el número de identificación en el pedido.
+ */
+function craftrootsmp_save_identification_checkout_field($order, $data) {
+    $field_key = CRAFTROOTSMP_ID_FIELD_KEY;
+
+    if (empty($data[$field_key])) {
+        return;
+    }
+
+    $order->update_meta_data(
+        CRAFTROOTSMP_ID_META_KEY,
+        sanitize_text_field($data[$field_key])
+    );
+}
+add_action('woocommerce_checkout_create_order', 'craftrootsmp_save_identification_checkout_field', 10, 2);
+
+/**
+ * Obtiene el valor guardado del número de identificación.
+ */
+function craftrootsmp_get_order_identification($order) {
+    if (is_numeric($order)) {
+        $order = wc_get_order($order);
+    }
+
+    if (!$order) {
+        return '';
+    }
+
+    return (string) $order->get_meta(CRAFTROOTSMP_ID_META_KEY);
+}
+
+/**
+ * Muestra el número de identificación en el panel de administración.
+ */
+function craftrootsmp_display_identification_admin_order($order) {
+    $value = craftrootsmp_get_order_identification($order);
+
+    if ($value === '') {
+        return;
+    }
+
+    echo '<p><strong>' . esc_html__('Número de Identificación', 'craftrootsmp') . ':</strong> ' . esc_html($value) . '</p>';
+}
+add_action('woocommerce_admin_order_data_after_billing_address', 'craftrootsmp_display_identification_admin_order', 10, 1);
+
+/**
+ * Muestra el número de identificación en la página de pedido recibido.
+ */
+function craftrootsmp_display_identification_order_received($order) {
+    $value = craftrootsmp_get_order_identification($order);
+
+    if ($value === '') {
+        return;
+    }
+
+    echo '<p><strong>' . esc_html__('Número de Identificación', 'craftrootsmp') . ':</strong> ' . esc_html($value) . '</p>';
+}
+add_action('woocommerce_order_details_after_customer_details', 'craftrootsmp_display_identification_order_received', 10, 1);
+
+/**
+ * Incluye el número de identificación en los correos del pedido.
+ */
+function craftrootsmp_identification_email_order_meta($fields, $sent_to_admin, $order) {
+    $value = craftrootsmp_get_order_identification($order);
+
+    if ($value === '') {
+        return $fields;
+    }
+
+    $fields[CRAFTROOTSMP_ID_FIELD_KEY] = [
+        'label' => __('Número de Identificación', 'craftrootsmp'),
+        'value' => $value,
+    ];
+
+    return $fields;
+}
+add_filter('woocommerce_email_order_meta_fields', 'craftrootsmp_identification_email_order_meta', 10, 3);
+
 function craftrootsmp_enqueue_checkout_assets() {
     if (!is_checkout()) {
         return;
@@ -61,13 +183,7 @@ function craftrootsmp_checkout_fields_layout($fields) {
         $billing['billing_last_name']['label'] = 'Apellidos';
     }
 
-    $id_field_keys = [
-        'billing_document',
-        'billing_cedula',
-        'billing_identification',
-        'billing_id_number',
-        'billing_nit',
-    ];
+    $id_field_keys = craftrootsmp_get_identification_field_keys();
 
     $id_field_key = null;
     foreach ($id_field_keys as $key) {

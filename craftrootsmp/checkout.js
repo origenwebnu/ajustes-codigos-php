@@ -7,6 +7,7 @@
     const FIELD_LABELS = {
         billing_first_name: 'Nombres',
         billing_last_name: 'Apellidos',
+        billing_identification: 'Número de Identificación',
         billing_address_1: 'Calle, Número.',
         billing_address_2: 'Casa, apartamento, etc. (Opcional)',
         billing_city: 'Ciudad',
@@ -102,6 +103,7 @@
     const TWO_COLUMN_FIELDS = {
         billing_first_name: 'first',
         billing_last_name: 'last',
+        billing_identification: 'first',
         billing_city: 'first',
         billing_state: 'last',
         billing_postcode: 'first',
