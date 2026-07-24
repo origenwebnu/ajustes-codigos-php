@@ -92,6 +92,91 @@
     width: 100%;
 }
 
+/* ---- AVISOS (producto añadido, cupón, etc.) ---- */
+.ny-carrito .woocommerce-notices-wrapper .woocommerce-message,
+.ny-carrito .woocommerce-notices-wrapper .woocommerce-info,
+.ny-carrito .woocommerce-message {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: wrap !important;
+    gap: 12px 16px !important;
+    width: 100% !important;
+    margin: 0 0 24px !important;
+    padding: 14px 22px !important;
+    border: none !important;
+    border-top: none !important;
+    border-radius: var(--cr-radius-pill) !important;
+    background: var(--cr-lime) !important;
+    color: var(--cr-black) !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.ny-carrito .woocommerce-notices-wrapper .woocommerce-message::before,
+.ny-carrito .woocommerce-notices-wrapper .woocommerce-info::before,
+.ny-carrito .woocommerce-message::before {
+    display: none !important;
+    content: none !important;
+}
+
+.ny-carrito .woocommerce-notices-wrapper .woocommerce-message a.button,
+.ny-carrito .woocommerce-notices-wrapper .woocommerce-info a.button,
+.ny-carrito .woocommerce-message a.button {
+    flex: 0 0 auto;
+    order: 2;
+    background: var(--cr-white) !important;
+    color: var(--cr-black) !important;
+    border: 1px solid var(--cr-black) !important;
+    border-radius: var(--cr-radius-pill) !important;
+    padding: 10px 18px !important;
+    margin: 0 !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    white-space: nowrap;
+    box-shadow: none !important;
+}
+
+.ny-carrito .woocommerce-notices-wrapper .woocommerce-message a.button:hover,
+.ny-carrito .woocommerce-notices-wrapper .woocommerce-info a.button:hover,
+.ny-carrito .woocommerce-message a.button:hover {
+    background: #fafafa !important;
+    color: var(--cr-black) !important;
+}
+
+.ny-carrito .woocommerce-notices-wrapper .woocommerce-error {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 0 24px !important;
+    padding: 14px 22px !important;
+    border: 1px solid var(--cr-accent) !important;
+    border-radius: var(--cr-radius-pill) !important;
+    background: #fff5f5 !important;
+    color: var(--cr-accent) !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+    box-shadow: none !important;
+    list-style: none !important;
+}
+
+.ny-carrito .woocommerce-notices-wrapper .woocommerce-error::before {
+    display: none !important;
+    content: none !important;
+}
+
+.ny-carrito .woocommerce-notices-wrapper .woocommerce-error li {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    color: inherit !important;
+}
+
 .ny-carrito form.woocommerce-cart-form {
     flex: 13 1 0;
     min-width: 0;
@@ -812,5 +897,21 @@
         font-size: max(11px, calc(0.88rem / 2)) !important;
         padding: 12px 18px !important;
         letter-spacing: 0.02em;
+    }
+
+    .ny-carrito .woocommerce-notices-wrapper .woocommerce-message,
+    .ny-carrito .woocommerce-notices-wrapper .woocommerce-info,
+    .ny-carrito .woocommerce-message {
+        flex-direction: column;
+        align-items: flex-start !important;
+        padding: 16px 20px !important;
+    }
+
+    .ny-carrito .woocommerce-notices-wrapper .woocommerce-message a.button,
+    .ny-carrito .woocommerce-notices-wrapper .woocommerce-info a.button,
+    .ny-carrito .woocommerce-message a.button {
+        width: 100%;
+        text-align: center;
+        white-space: normal;
     }
 }
