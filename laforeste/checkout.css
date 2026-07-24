@@ -5,9 +5,9 @@
 
 .ny-compraf {
     --cr-lime: #DFFF70;
-    --cr-black: #111111;
-    --cr-text: #111111;
-    --cr-muted: #6B6B6B;
+    --cr-black: #2f0510;
+    --cr-text: #2f0510;
+    --cr-muted: #2f0510;
     --cr-accent: #581222;
     --cr-border: #581222;
     --cr-input-border: #D5D5D5;
@@ -59,10 +59,52 @@ body.woocommerce-order-received .ny-compraf .woocommerce *:not([class*="eicon"])
     font-family: "Diagramm-Regular", sans-serif !important;
 }
 
+/* ---- COLOR TIPOGRAFÍA: todo el checkout ---- */
 .ny-compraf,
+body.woocommerce-order-received .ny-compraf,
 .ny-compraf .woocommerce,
-.ny-compraf .woocommerce *:not([class*="eicon"]):not([class*="fa"]):not(i) {
-    font-family: var(--cr-font) !important;
+body.woocommerce-order-received .ny-compraf .woocommerce,
+.ny-compraf label,
+.ny-compraf legend,
+.ny-compraf h1,
+.ny-compraf h2,
+.ny-compraf h3,
+.ny-compraf h4,
+.ny-compraf p,
+.ny-compraf a,
+.ny-compraf th,
+.ny-compraf td,
+.ny-compraf span,
+.ny-compraf li,
+.ny-compraf .button,
+.ny-compraf input,
+.ny-compraf button,
+.ny-compraf select,
+.ny-compraf textarea,
+.ny-compraf .cr-checkout-header__title,
+.ny-compraf .cr-checkout-header__continue,
+.ny-compraf .cr-checkout-product__name,
+.ny-compraf .woocommerce-checkout-review-order-table th,
+.ny-compraf .woocommerce-checkout-review-order-table td,
+.ny-compraf #payment .wc_payment_method > label,
+.ny-compraf #payment .payment_box,
+.ny-compraf #payment .payment_box p,
+.ny-compraf .bold_co_checkout_page_body_text,
+.ny-compraf #bold_co_checkout_page_footer_title,
+.ny-compraf .woocommerce-privacy-policy-text,
+.ny-compraf .woocommerce-privacy-policy-text p,
+.ny-compraf .woocommerce-privacy-policy-link,
+.ny-compraf .woocommerce-terms-and-conditions-wrapper,
+.ny-compraf .woocommerce-terms-and-conditions-wrapper label,
+.ny-compraf .woocommerce-terms-and-conditions-wrapper a,
+.ny-compraf #place_order,
+.ny-compraf .select2-container .select2-selection__rendered,
+body.woocommerce-order-received .ny-compraf .woocommerce-order-overview li,
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details th,
+body.woocommerce-order-received .ny-compraf .woocommerce-table--order-details td,
+body.woocommerce-order-received .ny-compraf .woocommerce-customer-details,
+body.woocommerce-order-received .ny-compraf .woocommerce-customer-details address {
+    color: #2f0510 !important;
 }
 
 .ny-compraf .elementor-widget-container,
@@ -101,7 +143,7 @@ body.woocommerce-order-received .ny-compraf .woocommerce *:not([class*="eicon"])
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--cr-accent);
+    color: #2f0510;
     line-height: 1.2;
 }
 
@@ -587,7 +629,7 @@ body.woocommerce-checkout .ny-compraf #billing_phone_field {
     font-family: var(--cr-font) !important;
     font-size: 0.88rem !important;
     line-height: 1.5 !important;
-    color: var(--cr-muted) !important;
+    color: #2f0510 !important;
 }
 
 .ny-compraf #bold_co_checkout_page_footer {
@@ -619,7 +661,7 @@ body.woocommerce-checkout .ny-compraf #billing_phone_field {
 }
 
 .ny-compraf .woocommerce-privacy-policy-link {
-    color: var(--cr-accent) !important;
+    color: #2f0510 !important;
     text-decoration: underline;
     text-underline-offset: 2px;
 }
@@ -838,7 +880,7 @@ body.woocommerce-order-received .ny-compraf .cr-order-details-title {
     font-weight: 700 !important;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--cr-accent) !important;
+    color: #2f0510 !important;
 }
 
 /* Detalles del pedido (solo la caja gris) */
