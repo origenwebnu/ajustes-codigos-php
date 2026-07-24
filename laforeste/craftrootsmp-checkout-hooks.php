@@ -32,7 +32,7 @@ function craftrootsmp_locate_woocommerce_templates($template, $template_name, $t
 add_filter('woocommerce_locate_template', 'craftrootsmp_locate_woocommerce_templates', 20, 3);
 
 /**
- * Encabezado de 3 columnas en pedido recibido (fallback si checkout.js no carga).
+ * Ajusta tabla de pedido recibido: encabezado, totales y limpieza (sin tocar cantidad PHP).
  */
 function craftrootsmp_order_received_table_head_fix() {
     if (!function_exists('is_order_received_page') || !is_order_received_page()) {
@@ -55,29 +55,50 @@ function craftrootsmp_order_received_table_head_fix() {
         }
 
         table.querySelectorAll('tbody tr').forEach(function (row) {
-            var nameCell = row.querySelector('td.product-name') || row.cells[0];
-            var totalCell = row.querySelector('td.product-total') || row.cells[row.cells.length - 1];
+            var nameCell = row.querySelector('td.product-name');
             var qtyCell = row.querySelector('td.product-quantity');
+            var totalCell = row.querySelector('td.product-total');
 
             if (!nameCell || !totalCell) {
                 return;
             }
 
-            nameCell.classList.add('product-name');
-            totalCell.classList.add('product-total');
-
             nameCell.querySelectorAll('.product-quantity, .quantity, .cr-order-item-qty').forEach(function (el) {
                 el.remove();
             });
 
+            nameCell.querySelectorAll('a').forEach(function (link) {
+                link.textContent = link.textContent.replace(/\s*[×x]\s*\d+\s*$/i, '').trim();
+            });
+
+            var qty = row.getAttribute('data-cr-qty')
+                || (qtyCell && qtyCell.getAttribute('data-cr-qty'))
+                || (qtyCell && /^\d+$/.test((qtyCell.textContent || '').trim()) ? qtyCell.textContent.trim() : '1');
+
             if (!qtyCell) {
                 qtyCell = document.createElement('td');
                 qtyCell.className = 'product-quantity';
-                var match = (nameCell.textContent || '').match(/[×x]\s*(\d+)/i);
-                qtyCell.textContent = match ? match[1] : '1';
                 row.insertBefore(qtyCell, totalCell);
             }
+
+            qtyCell.setAttribute('data-cr-qty', qty);
+            qtyCell.textContent = qty;
         });
+
+        table.querySelectorAll('tfoot tr').forEach(function (row) {
+            var th = row.querySelector('th');
+            var cells = row.querySelectorAll('th, td');
+
+            if (th && cells.length === 2) {
+                th.setAttribute('colspan', '2');
+            }
+
+            if (row.classList.contains('order-actions') || /acciones/i.test((th && th.textContent) || '')) {
+                row.style.display = 'none';
+            }
+        });
+
+        table.classList.add('cr-order-table-ready');
     });
     </script>
     <?php
@@ -561,8 +582,6 @@ function craftrootsmp_order_received_item_name($item_name, $item, $is_visible) {
     $thumbnail = craftrootsmp_get_gallery_product_image($product);
     $plain_name = wp_strip_all_tags($item_name);
     $plain_name = preg_replace('/\s*×\s*\d+\s*$/', '', $plain_name);
-
-    $quantity = (int) $item->get_quantity();
 
     if (!$thumbnail) {
         return esc_html($plain_name);

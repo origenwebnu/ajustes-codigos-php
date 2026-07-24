@@ -453,6 +453,22 @@
         });
     }
 
+    function getOrderItemQuantity(row, nameCell, qtyCell) {
+        if (row.getAttribute('data-cr-qty')) {
+            return row.getAttribute('data-cr-qty');
+        }
+
+        if (qtyCell && qtyCell.getAttribute('data-cr-qty')) {
+            return qtyCell.getAttribute('data-cr-qty');
+        }
+
+        if (qtyCell && /^\d+$/.test((qtyCell.textContent || '').trim())) {
+            return qtyCell.textContent.trim();
+        }
+
+        return '1';
+    }
+
     function fixOrderDetailsTable(root) {
         const table = root.querySelector('.woocommerce-table--order-details');
         if (!table || table.classList.contains('cr-order-table-ready')) {
@@ -475,52 +491,36 @@
         table.querySelectorAll('tbody tr').forEach(function (row) {
             let nameCell = row.querySelector('td.product-name');
             let totalCell = row.querySelector('td.product-total');
-
-            if (!nameCell && row.cells.length >= 2) {
-                nameCell = row.cells[0];
-                nameCell.classList.add('product-name');
-            }
-
-            if (!totalCell && row.cells.length >= 2) {
-                totalCell = row.cells[row.cells.length - 1];
-                totalCell.classList.add('product-total');
-            }
+            let qtyCell = row.querySelector('td.product-quantity');
 
             if (!nameCell || !totalCell) {
                 return;
             }
 
-            let qtyCell = row.querySelector('td.product-quantity');
-            const qtyHolder = nameCell.querySelector('.cr-order-item-qty');
-            const qtyEl = nameCell.querySelector('.product-quantity, .quantity');
-            const qtyMatch = nameCell.textContent.match(/[×x]\s*(\d+)/i);
-            const qty = qtyHolder
-                ? qtyHolder.getAttribute('data-qty')
-                : (qtyEl ? qtyEl.textContent.replace(/[^\d]/g, '') : (qtyMatch ? qtyMatch[1] : '1'));
-
-            if (qtyHolder) {
-                qtyHolder.remove();
-            }
-
-            if (qtyEl) {
-                qtyEl.remove();
-            }
-
             cleanOrderProductNameCell(nameCell);
+
+            const qty = getOrderItemQuantity(row, nameCell, qtyCell);
 
             if (!qtyCell) {
                 qtyCell = document.createElement('td');
                 qtyCell.className = 'product-quantity';
-            }
-
-            qtyCell.textContent = qty;
-
-            if (nameCell.nextSibling !== qtyCell) {
                 row.insertBefore(qtyCell, totalCell);
             }
 
-            if (nameCell.nextSibling && nameCell.nextSibling !== qtyCell) {
-                row.insertBefore(nameCell, row.firstChild);
+            qtyCell.setAttribute('data-cr-qty', qty);
+            qtyCell.textContent = qty;
+        });
+
+        table.querySelectorAll('tfoot tr').forEach(function (row) {
+            const th = row.querySelector('th');
+            const cells = row.querySelectorAll('th, td');
+
+            if (th && cells.length === 2) {
+                th.setAttribute('colspan', '2');
+            }
+
+            if (row.classList.contains('order-actions') || /acciones/i.test((th && th.textContent) || '')) {
+                row.style.display = 'none';
             }
         });
 
