@@ -48,12 +48,6 @@
     font-family: "Diagramm-Regular", sans-serif !important;
 }
 
-.ny-carrito,
-.ny-carrito .woocommerce,
-.ny-carrito .woocommerce *:not([class*="eicon"]):not([class*="fa"]):not(i) {
-    font-family: var(--cr-font) !important;
-}
-
 .ny-carrito .elementor-widget-container,
 .ny-carrito .elementor-shortcode {
     width: 100% !important;
@@ -244,6 +238,9 @@
     text-align: left;
     padding-left: 0 !important;
     padding-right: 18px !important;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
 }
 
 .ny-carrito table.cart thead th.product-price {
@@ -347,9 +344,9 @@
 }
 
 .ny-carrito table.cart .product-name a {
-    color: var(--cr-black) !important;
-    font-weight: 400;
-    font-size: 0.98rem;
+    color: #2f0510 !important;
+    font-weight: 500;
+    font-size: 18px;
     line-height: 1.45;
     text-decoration: none;
 }
@@ -454,9 +451,9 @@
     padding: 0 0 28px;
     border: none;
     border-bottom: 1px solid var(--cr-border);
-    font-size: 0.72rem;
-    font-weight: 400;
-    letter-spacing: 0.12em;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0;
     text-transform: uppercase;
     text-align: center;
     color: var(--cr-accent);
@@ -543,9 +540,9 @@
     width: 100%;
     max-width: 100%;
     margin: 0;
-    font-size: 0.8rem;
+    font-size: 16px;
     line-height: 1.65;
-    color: var(--cr-muted);
+    color: #2f0510;
     font-weight: 400;
     box-sizing: border-box;
     white-space: normal;
@@ -808,7 +805,7 @@
     }
 
     .ny-carrito table.cart tr.cart_item td.product-name a:not(.remove) {
-        font-size: 1rem !important;
+        font-size: 18px !important;
         line-height: 1.45 !important;
         padding-right: 0 !important;
     }
