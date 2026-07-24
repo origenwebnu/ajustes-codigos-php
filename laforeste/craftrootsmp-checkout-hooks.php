@@ -459,6 +459,18 @@ function craftrootsmp_order_received_item_totals($total_rows, $order, $tax_displ
 add_filter('woocommerce_get_order_item_totals', 'craftrootsmp_order_received_item_totals', 10, 3);
 
 /**
+ * Oculta la cantidad inline (× 1) dentro del nombre; va en su propia columna.
+ */
+function craftrootsmp_order_received_hide_inline_quantity($qty_html, $item) {
+    if (function_exists('is_order_received_page') && is_order_received_page()) {
+        return '';
+    }
+
+    return $qty_html;
+}
+add_filter('woocommerce_order_item_quantity_html', 'craftrootsmp_order_received_hide_inline_quantity', 10, 2);
+
+/**
  * Miniatura del producto en la tabla de pedido recibido.
  */
 function craftrootsmp_order_received_item_name($item_name, $item, $is_visible) {

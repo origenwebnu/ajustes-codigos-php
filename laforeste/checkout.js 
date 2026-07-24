@@ -443,6 +443,16 @@
         }
     }
 
+    function cleanOrderProductNameCell(nameCell) {
+        nameCell.querySelectorAll('.product-quantity, .quantity, .cr-order-item-qty').forEach(function (el) {
+            el.remove();
+        });
+
+        nameCell.querySelectorAll('a').forEach(function (link) {
+            link.textContent = link.textContent.replace(/\s*[×x]\s*\d+\s*$/i, '').trim();
+        });
+    }
+
     function fixOrderDetailsTable(root) {
         const table = root.querySelector('.woocommerce-table--order-details');
         if (!table || table.classList.contains('cr-order-table-ready')) {
@@ -495,6 +505,8 @@
             if (qtyEl) {
                 qtyEl.remove();
             }
+
+            cleanOrderProductNameCell(nameCell);
 
             if (!qtyCell) {
                 qtyCell = document.createElement('td');
