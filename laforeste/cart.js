@@ -113,26 +113,11 @@
         });
     }
 
-    function buildCartHeader(container, itemCount) {
-        if (container.querySelector('.cr-cart-header')) {
-            return;
+    function removeCartHeader(container) {
+        const header = container.querySelector('.cr-cart-header');
+        if (header) {
+            header.remove();
         }
-
-        const form = container.querySelector('form.woocommerce-cart-form');
-        if (!form) {
-            return;
-        }
-
-        const header = document.createElement('div');
-        header.className = 'cr-cart-header';
-        header.innerHTML =
-            '<div class="cr-cart-header__left">' +
-                '<h1 class="cr-cart-header__title">Carrito de compras</h1>' +
-                '<p class="cr-cart-header__count">(' + itemCount + ' ' + (itemCount === 1 ? 'Producto' : 'Productos') + ')</p>' +
-            '</div>' +
-            '<a href="' + CONTINUE_SHOPPING_URL + '" class="cr-cart-header__continue">Seguir comprando</a>';
-
-        container.insertBefore(header, form);
     }
 
     function ensureCartFormId(form) {
@@ -345,7 +330,7 @@
 
         const cartTotals = container.querySelector('.cart_totals');
 
-        buildCartHeader(container, itemCount);
+        removeCartHeader(container);
         setSpanishTableHeaders(container);
         moveRemoveIntoProductName(container);
         replaceRemoveIcons(container);

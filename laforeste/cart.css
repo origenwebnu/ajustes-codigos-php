@@ -34,57 +34,6 @@
     max-width: 100% !important;
 }
 
-/* ---- ENCABEZADO ---- */
-.ny-carrito .cr-cart-header,
-.ny-carrito .cr-cart-header__title,
-.ny-carrito .cr-cart-header__count,
-.ny-carrito .cr-cart-header__continue {
-    font-family: "Diagramm-Regular", sans-serif !important;
-}
-
-.ny-carrito .cr-cart-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 20px;
-    width: 100%;
-    margin-bottom: 28px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--cr-border);
-}
-
-.ny-carrito .cr-cart-header__title {
-    margin: 0;
-    font-size: 1.35rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--cr-accent);
-    line-height: 1.2;
-}
-
-.ny-carrito .cr-cart-header__count {
-    margin: 6px 0 0;
-    font-size: 0.95rem;
-    color: var(--cr-muted);
-}
-
-.ny-carrito .cr-cart-header__continue {
-    margin-top: 4px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    color: var(--cr-black);
-    white-space: nowrap;
-}
-
-.ny-carrito .cr-cart-header__continue:hover {
-    opacity: 0.7;
-}
-
 /* ---- LAYOUT 2 COLUMNAS ---- */
 .ny-carrito .woocommerce:not(:has(.cart-empty)) {
     display: flex !important;
@@ -93,8 +42,7 @@
     align-items: flex-start;
 }
 
-.ny-carrito .woocommerce-notices-wrapper,
-.ny-carrito .cr-cart-header {
+.ny-carrito .woocommerce-notices-wrapper {
     flex: 0 0 100%;
     width: 100%;
 }
