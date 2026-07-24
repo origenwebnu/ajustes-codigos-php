@@ -35,6 +35,13 @@
 }
 
 /* ---- ENCABEZADO ---- */
+.ny-carrito .cr-cart-header,
+.ny-carrito .cr-cart-header__title,
+.ny-carrito .cr-cart-header__count,
+.ny-carrito .cr-cart-header__continue {
+    font-family: "Diagramm-Regular", sans-serif !important;
+}
+
 .ny-carrito .cr-cart-header {
     display: flex;
     align-items: flex-start;
