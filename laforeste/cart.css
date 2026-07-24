@@ -16,6 +16,38 @@
     --cr-font: "Diagramm-Regular", sans-serif;
 }
 
+/* ---- TIPOGRAFÍA: todo el carrito ---- */
+.ny-carrito,
+.ny-carrito .woocommerce,
+.ny-carrito .woocommerce *:not([class*="eicon"]):not([class*="fa"]):not(i):not(.dashicons),
+.ny-carrito input,
+.ny-carrito button,
+.ny-carrito select,
+.ny-carrito textarea,
+.ny-carrito optgroup,
+.ny-carrito option,
+.ny-carrito label,
+.ny-carrito legend,
+.ny-carrito h1,
+.ny-carrito h2,
+.ny-carrito h3,
+.ny-carrito h4,
+.ny-carrito p,
+.ny-carrito a,
+.ny-carrito th,
+.ny-carrito td,
+.ny-carrito span,
+.ny-carrito li,
+.ny-carrito .button,
+.ny-carrito .woocommerce-message,
+.ny-carrito .woocommerce-info,
+.ny-carrito .woocommerce-error,
+.ny-carrito .cart_totals > h2,
+.ny-carrito input::placeholder,
+.ny-carrito textarea::placeholder {
+    font-family: "Diagramm-Regular", sans-serif !important;
+}
+
 .ny-carrito,
 .ny-carrito .woocommerce,
 .ny-carrito .woocommerce *:not([class*="eicon"]):not([class*="fa"]):not(i) {
@@ -715,11 +747,6 @@
         width: 100% !important;
         flex: none !important;
         max-width: 100% !important;
-    }
-
-    .ny-carrito .cr-cart-header {
-        flex-direction: column;
-        align-items: flex-start;
     }
 
     /* Tabla: ocultar encabezados */

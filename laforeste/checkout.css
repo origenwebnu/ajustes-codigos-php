@@ -18,6 +18,47 @@
     --cr-font: "Diagramm-Regular", sans-serif;
 }
 
+/* ---- TIPOGRAFÍA: checkout y pedido recibido ---- */
+.ny-compraf,
+body.woocommerce-order-received .ny-compraf,
+.ny-compraf .woocommerce,
+body.woocommerce-order-received .ny-compraf .woocommerce,
+.ny-compraf .woocommerce *:not([class*="eicon"]):not([class*="fa"]):not(i):not(.dashicons),
+body.woocommerce-order-received .ny-compraf .woocommerce *:not([class*="eicon"]):not([class*="fa"]):not(i):not(.dashicons),
+.ny-compraf input,
+.ny-compraf button,
+.ny-compraf select,
+.ny-compraf textarea,
+.ny-compraf optgroup,
+.ny-compraf option,
+.ny-compraf label,
+.ny-compraf legend,
+.ny-compraf h1,
+.ny-compraf h2,
+.ny-compraf h3,
+.ny-compraf h4,
+.ny-compraf p,
+.ny-compraf a,
+.ny-compraf th,
+.ny-compraf td,
+.ny-compraf span,
+.ny-compraf li,
+.ny-compraf .button,
+.ny-compraf .woocommerce-message,
+.ny-compraf .woocommerce-info,
+.ny-compraf .woocommerce-error,
+.ny-compraf .woocommerce-notice,
+.ny-compraf .woocommerce-thankyou-order-received,
+.ny-compraf .cr-thankyou-banner,
+.ny-compraf .cr-checkout-header__title,
+.ny-compraf .cr-checkout-header__continue,
+.ny-compraf #order_review,
+.ny-compraf #customer_details,
+.ny-compraf input::placeholder,
+.ny-compraf textarea::placeholder {
+    font-family: "Diagramm-Regular", sans-serif !important;
+}
+
 .ny-compraf,
 .ny-compraf .woocommerce,
 .ny-compraf .woocommerce *:not([class*="eicon"]):not([class*="fa"]):not(i) {
