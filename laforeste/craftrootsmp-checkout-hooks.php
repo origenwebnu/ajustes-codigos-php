@@ -14,6 +14,77 @@ define('CRAFTROOTSMP_ID_FIELD_KEY', 'billing_identification');
 define('CRAFTROOTSMP_ID_META_KEY', '_billing_identification');
 
 /**
+ * Plantillas WooCommerce custom (pedido recibido, etc.).
+ */
+function craftrootsmp_locate_woocommerce_templates($template, $template_name, $template_path) {
+    if (strpos($template_name, 'order/') !== 0 && strpos($template_name, 'emails/') !== 0) {
+        return $template;
+    }
+
+    $custom = get_stylesheet_directory() . '/craftrootsmp/woocommerce/' . $template_name;
+
+    if (file_exists($custom)) {
+        return $custom;
+    }
+
+    return $template;
+}
+add_filter('woocommerce_locate_template', 'craftrootsmp_locate_woocommerce_templates', 20, 3);
+
+/**
+ * Encabezado de 3 columnas en pedido recibido (fallback si checkout.js no carga).
+ */
+function craftrootsmp_order_received_table_head_fix() {
+    if (!function_exists('is_order_received_page') || !is_order_received_page()) {
+        return;
+    }
+    ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var table = document.querySelector('.ny-compraf .woocommerce-table--order-details, .woocommerce-order-details .woocommerce-table--order-details');
+        if (!table) {
+            return;
+        }
+
+        var headRow = table.querySelector('thead tr');
+        if (headRow) {
+            headRow.innerHTML =
+                '<th class="product-name">Producto</th>' +
+                '<th class="product-quantity">Cantidad</th>' +
+                '<th class="product-total">Total</th>';
+        }
+
+        table.querySelectorAll('tbody tr').forEach(function (row) {
+            var nameCell = row.querySelector('td.product-name') || row.cells[0];
+            var totalCell = row.querySelector('td.product-total') || row.cells[row.cells.length - 1];
+            var qtyCell = row.querySelector('td.product-quantity');
+
+            if (!nameCell || !totalCell) {
+                return;
+            }
+
+            nameCell.classList.add('product-name');
+            totalCell.classList.add('product-total');
+
+            nameCell.querySelectorAll('.product-quantity, .quantity, .cr-order-item-qty').forEach(function (el) {
+                el.remove();
+            });
+
+            if (!qtyCell) {
+                qtyCell = document.createElement('td');
+                qtyCell.className = 'product-quantity';
+                var match = (nameCell.textContent || '').match(/[×x]\s*(\d+)/i);
+                qtyCell.textContent = match ? match[1] : '1';
+                row.insertBefore(qtyCell, totalCell);
+            }
+        });
+    });
+    </script>
+    <?php
+}
+add_action('wp_footer', 'craftrootsmp_order_received_table_head_fix', 50);
+
+/**
  * Claves de campos de identificación que pueden existir por otros plugins.
  */
 function craftrootsmp_get_identification_field_keys() {
@@ -494,12 +565,11 @@ function craftrootsmp_order_received_item_name($item_name, $item, $is_visible) {
     $quantity = (int) $item->get_quantity();
 
     if (!$thumbnail) {
-        return '<span class="cr-order-item-qty" data-qty="' . esc_attr($quantity) . '"></span>' . esc_html($plain_name);
+        return esc_html($plain_name);
     }
 
     return sprintf(
-        '<span class="cr-order-item-qty" data-qty="%1$d"></span><div class="cr-checkout-product"><div class="cr-checkout-product__thumb">%2$s</div><div class="cr-checkout-product__name">%3$s</div></div>',
-        $quantity,
+        '<div class="cr-checkout-product"><div class="cr-checkout-product__thumb">%1$s</div><div class="cr-checkout-product__name">%2$s</div></div>',
         $thumbnail,
         esc_html($plain_name)
     );
