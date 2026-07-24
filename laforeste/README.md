@@ -1,36 +1,25 @@
 # La Foreste (laforeste.com)
 
-Código personalizado para el sitio WooCommerce de **La Foreste**.
+Carpeta del cliente **La Foreste** para archivos nuevos y desarrollos futuros.
 
-## Estructura
+## Importante: separación de carpetas
 
-```
-laforeste/
-├── craftrootsmp/          → subir a wp-content/themes/hello-elementor/craftrootsmp/
-└── woocommerce/emails/    → subir a wp-content/themes/hello-elementor/woocommerce/emails/
-```
+| Carpeta en el repo | Qué es |
+|--------------------|--------|
+| **`laforeste/`** (esta carpeta) | Archivos nuevos que subas o desarrollemos para La Foreste |
+| **`craftrootsmp/`** (raíz del repo) | Módulo WooCommerce ya existente en el servidor (carrito, checkout, correos, Stripe) |
 
-## Despliegue en el servidor
-
-1. Subir `laforeste/craftrootsmp/` a:
-   `wp-content/themes/hello-elementor/craftrootsmp/`
-2. Subir `laforeste/woocommerce/` a:
-   `wp-content/themes/hello-elementor/woocommerce/`
-3. Verificar en `functions.php` del child theme:
-   ```php
-   require get_stylesheet_directory() . '/craftrootsmp/craftrootsmp-loader.php';
-   ```
-4. Limpiar caché LiteSpeed y, si aplica, la caché de plantillas de WooCommerce.
-
-## Módulos
-
-| Carpeta / archivo | Función |
-|-------------------|---------|
-| `cart.css`, `cart.js` | Carrito (`/carrito/`) |
-| `checkout.css`, `checkout.js` | Checkout y pedido recibido |
-| `craftrootsmp-email-hooks.php` | Correos al cliente |
-| `stripe-express-checkout.*` | Botones Stripe en resumen |
+No mezclar: lo nuevo va aquí en `laforeste/`. El código desplegado en el tema sigue en `craftrootsmp/`.
 
 ## Rama de trabajo
 
-Usar la rama `cursor/laforeste-230f` para todos los cambios de este cliente.
+`cursor/laforeste-230f`
+
+## Despliegue del módulo existente (`craftrootsmp/`)
+
+Eso sigue yendo al child theme en el servidor:
+
+- `craftrootsmp/` → `wp-content/themes/hello-elementor/craftrootsmp/`
+- `woocommerce/emails/` → `wp-content/themes/hello-elementor/woocommerce/emails/`
+
+Los archivos que agregues en `laforeste/` los definiremos según vayan llegando (tema, plugins, assets, etc.).
